@@ -12,14 +12,145 @@
   </button>
 </form>
 {% endblock searchform %} {% block content %}
-<br /><br />
+<br></br>
+
+<div class="main-content">
+  <br></br>
+  <div class="container mt-7">
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-9 col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
+ 
+
+      <fieldset class="border bg-white">
+        <p style="text-align:center; font-size: 30px"><u>{{ u }}</u></p>
+       
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-4">
+            <a href="{{ u.profile.image.url }}">
+              <img
+                src="{{ u.profile.image.url }}"
+                class="rounded-circle"
+                width="160px"
+                height="160px"
+              />
+            </a>
+            <br></br>
+            <div
+            class="d-block d-sm-none card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"
+          ></div>
+          </div>
+          <br>
+ 
+       <div class="col-sm-4">
+
+    		<p class="text-muted mb-0" style="font-size: 12px">First Name :</p>
+	  		<p>{{ u.profile.first_name }}</p>
+    		<p class="text-muted mb-0" style="font-size: 12px">Last Name :</p>
+	  		<p>{{ u.profile.last_name }}</p>	  		
+	  		<p class="text-muted mb-0" style="font-size: 12px">Email :</p>
+	  		<p style="text-align:center;">{{ u.email }} </p>
+
+        </div>
+        <div
+        class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"
+      ></div>
+          <div class="col-sm-4">
+
+	  		<p class="text-muted mb-0" style="font-size: 12px">About Me :</p>
+	  		<p>{{ u.profile.bio }} </p>
+	  		<br>
+	  		<p class="text-muted mb-0" style="font-size: 12px">Description :</p>
+	  		<p>{{ u.profile.description }} </p>
+	  		<br>
+	  		<p class="text-muted mb-0" style="font-size: 12px">Interests :</p>
+	  		<p>{{ u.profile.interests }} </p>
+        </fieldset>
+        </div>
+      <p></p>
+
+          </div>
+          </div>
+<div class="container">
+<div class="row">
+     <div class="col-4">
+    </div>
+     <div class="col-8">
+    
+            <a href="{% url 'edit_profile' %}" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true"> Update Profle </a>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              Launch demo modal
+            </button>
+            <a href="/password_reset" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true">Change Password</a>  
+
+            <a href="/base" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true"> Comment List </a>
+
+
+	  		</div>
+	  		</div>
+	  		</div>
+	  		
+
+    <p>      </p>
+    <p>      </p>       
+        
+        
+    </div>
+  
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <a href="{% url 'edit_profile' %}" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true"> Update Profle </a>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="main-content">
   <div class="container mt-7">
     <div class="row">
-      <div class="col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
+      <div class="col-3"></div>
+      <div class="col-9 col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
         <div class="card card-profile shadow">
           <div class="row justify-content-center">
-            <div class="col-lg-3 order-lg-2">
+            <div class="col-md-2 col-lg-4 order-lg-2">
               <div class="card-profile-image">
                 <a href="{{ u.profile.image.url }}">
                   <img
@@ -196,4 +327,3 @@
 </div>
 
 {% endblock content %}
-

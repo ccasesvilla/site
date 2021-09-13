@@ -11,9 +11,10 @@
 {% block content %}
  	<div class="container">
 	    <div class="row">
-
-	      <div class="col-md-8">
+        <div class="col-3"></div>
+	      <div class="col-9 col-md-8">
 	        {% for post in posts %}
+          <br></br>
 	        <div class="card card-signin my-5">
 	          <div class="card-body">
 	          	<a href="{{ post.user_name.profile.get_absolute_url }}"><img src="{{ post.user_name.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
@@ -92,4 +93,4 @@
       })
 });
 </script>
-{% endblock jsfiles %}
+{% endblock jsfiles %}  

@@ -1,0 +1,164 @@
+{% block sidebar %}
+
+
+<main>
+    <br></br>
+<div class="d-none d-md-block" style="position: fixed; width:220px;">
+  <div class="deskContent d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
+    <a href="/"  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <svg class="bi me-2" width="40" height="10"><use xlink:href="#bootstrap"/></svg>
+    </a>
+<div class="row">
+    <br></br>
+        <br></br>
+</div>
+<div class="row">
+    <br></br>
+        <br></br>
+</div>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+       {% if user.is_authenticated %}
+        <a href="/" class="nav-link text-white" aria-current="page">
+          <i class="fas fa-house-user"></i>
+          Home
+        </a>
+        {% else %}
+         <a href="/" class="nav-link text-white" aria-current="page">
+          <i class="fas fa-house-user"></i>
+          Home
+        </a>
+        {% endif %}       
+      </li>
+        <p class="dropdown-divider">
+      <li>
+        <a href="/post_list" class="nav-link text-white">
+          <i class="fab fa-blogger"></i>
+         Post-List
+        </a>
+      </li>
+        <p class="dropdown-divider">
+      <li>
+        <a href="/base" class="nav-link text-white">
+          <i class="fas fa-comments"></i>
+         Comments
+        </a>
+      </li>
+        <p class="dropdown-divider">
+      <li>
+        <a href="/new_post" class="nav-link text-white">
+          <i class="fas fa-sticky-note"></i>
+          Blog-Form
+        </a>
+      </li>
+        <p class="dropdown-divider">
+      <li>
+        <a href="/topics" class="nav-link text-white">
+          <i class="fas fa-pen"></i>
+          Topic Log
+        </a>
+      </li>
+        <p class="dropdown-divider">
+      <li>
+        <a href="/new_topic" class="nav-link text-white">
+          <i class="fas fa-edit"></i>
+          New Topic
+        </a>
+      </li>
+        <p class="dropdown-divider">
+      <li>
+        <a href="/my-profile" class="nav-link text-white">
+        <i class="fas fa-id-badge fa-lg"></i>
+          Profile
+        </a>
+      </li>
+        <p class="dropdown-divider">
+    </ul>
+    <br></br>
+    </hr>
+ <br></br> 
+<div class="row">
+<br></br>
+</div>  
+    <div class="dropdown">
+      <a href="/user" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ user.profile.image.url }}" alt="" width="32" height="32" class="rounded-circle me-2">
+        <p>{{ user.username }}</p>
+
+      </a>
+      <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
+        <li><a class="dropdown-item" href="/new_post">New Blog Post</a></li>
+        <li><a class="dropdown-item" href="/base">Comments</a></li>
+        <li><a class="dropdown-item" href="/my-profile">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+      </ul>
+       <svg class="bi" width="40" height="602"><use xlink:href="#bootstrap"/></svg>
+    </div>
+  </div>
+</div>
+  <div class="d-block d-md-none" height="20" style="position: fixed;">
+<div class="d-flex flex-column flex-shrink-0 bg-dark" style="width: 4.5rem;">
+<svg class="bi" width="40" height="27"><use xlink:href="#bootstrap"/></svg>
+
+
+    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+      <li class="nav-item">
+        <p class="dropdown-divider">
+
+        <a href="/" class="nav-link border-top py-3 border-bottom" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right">
+        <i class="fas fa-house-user fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/" class="nav-link py-3 border-bottom" title="Post List" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="fab fa-blogger fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/base" class="nav-link py-3 border-bottom" title="Comments" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="fas fa-comments fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/new_post" class="nav-link py-3 border-bottom" title="New Post Form" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="fas fa-sticky-note fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/topics" class="nav-link py-3 border-bottom" title="Topics" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="fas fa-pen fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/new_topic" class="nav-link py-3 border-bottom" title="New Topic" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="fas fa-edit fa-2x"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/my-profile" class="nav-link py-3 border-bottom" title="Profile" data-bs-toggle="tooltip" data-bs-placement="right">
+          <i class="fas fa-id-badge fa-2x"></i>
+        </a>
+      </li>
+    </ul>
+    <div class="dropdown border-top">
+      <a href="/user" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ user.profile.image.url }}" alt="mdo" width="35" height="35" class="rounded-circle">
+      </a>
+      <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
+        <li><a class="dropdown-item" href="/new_post">New Blog Post</a></li>
+        <li><a class="dropdown-item" href="/base">Comments</a></li>
+        <li><a class="dropdown-item" href="/my-profile">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="/logout">Sign out</a></li>
+      </ul>
+            <svg class="bi" width="40" height="500"><use xlink:href="#bootstrap"/></svg>
+    </div>
+  </div>
+</div>
+ 
+</main>
+
+
+{% endblock sidebar %}
