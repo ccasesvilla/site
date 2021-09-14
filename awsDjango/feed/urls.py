@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from .views import PostUpdateView, PostListView, UserPostListView
+from .views import PostUpdateView, PostListView, UserPostListView, image_detail
 
 urlpatterns=[
 	path('', PostListView.as_view(), name='home'),
+	path('/<int:pk>/', views.image_detail, name='image-detail'),
 	path('post/new/', views.create_post, name='post-create'),
 	path('post/<int:pk>/', views.post_detail, name='post-detail'),
 	path('like/', views.like, name='post-like'),

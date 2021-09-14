@@ -4,13 +4,14 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from .forms import NewCommentForm, NewPostForm
+from .forms import NewCommentForm, NewPostForm, PostImageForm
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post, Comments, Like
+from .models import Post, Comments, Like, PostImage
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json
+from django.forms import modelformset_factory
 
 
 
@@ -24,6 +25,7 @@ class PostListView(ListView):
         context = super(PostListView, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             liked = [i for i in Post.objects.all() if Like.objects.filter(user = self.request.user, post=i)]
+            photos = PostImage.objects.all()
             context['liked_post'] = liked
         return context
 
@@ -48,9 +50,19 @@ class UserPostListView(LoginRequiredMixin, ListView):
 
 
 
+def image_detail(request, id):
+    post = get_object_or_404(Post, id=id)
+    photo = PostImage.objects.filter(post=post)
+
+    return render(request, 'feed/home.html', {'photo':photo} )
+
+
+
+
 @login_required
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    photos = PostImage.objects.filter(post=post)
     user = request.user
     is_liked =  Like.objects.filter(user=user, post=post)
     if request.method == 'POST':
@@ -63,22 +75,42 @@ def post_detail(request, pk):
             return redirect('post-detail', pk=pk)
     else:
         form = NewCommentForm()
-    return render(request, 'feed/post_detail.html', {'post':post, 'is_liked':is_liked, 'form':form})
+    return render(request, 'feed/post_detail.html', {'post':post, 'is_liked':is_liked, 'form':form, 'photos': photos})
 
 @login_required
 def create_post(request):
-	user = request.user
-	if request.method == "POST":
-		form = NewPostForm(request.POST, request.FILES)
-		if form.is_valid():
-			data = form.save(commit=False)
-			data.user_name = user
-			data.save()
-			messages.success(request, f'Posted Successfully')
-			return redirect('home')
-	else:
-		form = NewPostForm()
-	return render(request, 'feed/create_post.html', {'form':form})
+        user = request.user
+        # ImageFormSet = modelformset_factory(PostImage, form=PostImageForm, max_num = 10)
+
+        if request.method == "POST":
+            # formset = ImageFormSet(request.POST, request.FILES)
+            form = PostImageForm(request.POST or None, request.FILES or None)
+            files = request.FILES.getlist('images')
+            if form.is_valid():
+                data = form.save(commit=False)
+                
+                data.user_name = request.user
+             
+                data.save()
+                for f in files:
+                    photo = PostImage.objects.create(post=data,images=f)
+                    photo.save()
+                # for form in formset.cleaned_data:
+                #     if form:
+                #         images = form['images']
+                #         photo = PostImage(post=data, images=images)
+                #         photo.save(commit=False)
+
+                messages.success(request, f'Posted Successfully')
+                return redirect('home')
+        else:
+            form = PostImageForm()
+            # formset = ImageFormSet()
+        return render(request, 'feed/create_post.html', {'form':form})
+
+
+
+
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	model = Post

@@ -12,22 +12,23 @@
 {% block content %}
 <br><br>
 <div class="container d-flex-auto">
-    <div class="row">
-      <div class="col-3">
-      </div>
-      <div class="col-9">
-        <div class="card card-signin my-5">
-          <div class="card-body">
-            <h5 class="card-title text-center"><b>Post</b></h5>
-            <form class="form-signin" method = "POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset class="form-group"><br>
-                {{ form|crispy }}
+  <div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-9">
+      <div class="card card-signin my-5">
+        <div class="card-body">
+          <h5 class="card-title text-center"><b>Post</b></h5>
+          <form class="form-signin" method = "POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset class="form-group" style="text-transform:capitalize"><br>
+
+              {{ form|crispy }}
             </fieldset>
-            <div class="form-group">
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Post</button><br>
-            </div>
-        </form>
+          <div class="form-group">
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Post</button><br>
+          </div>
+      </form>
     </div>
     </div>
     </div>

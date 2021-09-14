@@ -21,7 +21,8 @@
 	          	<a class="text-dark" href="{{ post.user_name.profile.get_absolute_url }}"><b>{{ post.user_name }}</b></a>
 	          	<br><small class="text-muted">Posted on {{ post.date_posted }}</small>
 	          	<br><br>
-	            <p class="card-text text-dark">{{ post.description }}</p>
+
+              <p class="card-text text-dark">{{ post.description }}</p>
 	          </div>
 	          <a href="{% url 'post-detail' post.id %}"><img class="card-img-top" src="{{ post.pic.url }}" alt=""></a>
 	          {% if post.tags %}
