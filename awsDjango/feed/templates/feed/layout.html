@@ -1,4 +1,6 @@
 {% load static %}
+
+{% load notifications_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,6 +56,43 @@
           	<a class="nav-item nav-link btn btn-info ml-3  text-light" href="{% url 'register' %} ">Register</a>
           {% endif %}
 	    	{% block searchform %}{% endblock searchform %}
+
+			<div class="dropdown">
+				<a href="#" class="notification" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true">
+				  <i class="fa fa-bell" style="font-size:20px; margin: 5px;"></i>
+				  <span class="badge" style="font-size:20px;">{% live_notify_badge %}</span>
+				</a>
+				 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				   </button>
+				
+				
+				
+				   
+					   {% notifications_unread as unread_count %}
+		  
+						{% if unread_count %}
+					   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2" style="width:300px;">              
+						  You have <strong>{{ unread_count }}</strong> unread notification(s)....
+							<p class="dropdown-divider"></p> 
+					  
+				  
+						{% for notification in  user.notifications.unread %}
+							<div>
+							Message from <b>{{ notification.actor }}</b> on Post :
+					  <a  style="border-width: 2px; border-color: white; margin-left :20px;" class="btn btn-primary active" role="button" href="{% url 'notifications:mark_as_read' notification.slug %}" class="btn btn-primary">{{ notification.verb }}</a>		
+						  </div>
+						  <div class="dropdown-divider"></div>
+					  {% endfor %}
+						{% endif %}
+		  
+				  </div>
+				{% live_notify_list list_class="dropdown-menu" %}
+		  
+				</div>
+				
+
+
 		</div>
 	  </div>
 	</div>

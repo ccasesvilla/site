@@ -522,3 +522,21 @@ edited profile
 </div>
 
 {% endblock content %}
+
+
+
+
+create Post
+<form class="form-signin" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <fieldset class="form-group">
+    <br />
+    {{ form|crispy }}
+  </fieldset>
+  <div class="form-group">
+    <button
+      class="btn btn-lg btn-primary btn-block text-uppercase"
+      type="submit"
+    >
+      Post</button
+    ><br />

@@ -1,0 +1,65 @@
+{% extends "feed/layout.html" %}
+
+{% block content %}
+
+
+<div class="container">
+    <br></br>
+    <br></br>
+
+  <div class="row">   
+    <div class="col col-2">
+    </div>
+    <div class="col col-10">   
+
+    {% for post in page_obj %}
+    
+    <div class="container">
+      <div class="card right-block">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-3">
+              <img style="height: auto; margin:10px;" src="{{ post.author.profile.image.url }}" alt="mdo" width="120" height="130" class="rounded-circle">                  
+            </div>
+            <div class="col-8"> 
+              <h2 class="text-capitalize"><u>  {{ post.title }}</u> : </h2> 
+              <div class="card-body">
+                <p class="card-text">{{post.content|slice:":200" }}</p>
+              </div>
+            </div>   
+            <div class="row">
+            <div class="d-flex-inline" style="max-width: 100%">
+              <p class="card-text text-muted text-capitalize" style="margin-left: 10px;">{{ post.author }} | {{ post.created_on}}</p>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'blog:blog_detail' post.slug %}" class="btn btn-primary">Read More &rarr;</a>
+        </div>       
+      </div>
+    </div>
+    <p></p>
+    {% endfor %}
+      <br></br>
+    <div class="pagination">
+      <span class="step-links">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo;first</a>
+        <a href="?page={{ page_obj.previous_page_number }}">prev</a>
+          {% endif %}
+        <span class="current">
+          {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}.
+        </span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">last&raquo;</a>
+        {% endif %}
+        <br></br>
+      </span>
+    </div>
+    </div>
+  </div>
+</div>
+                     
+{% endblock content %}

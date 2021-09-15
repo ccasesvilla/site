@@ -1,0 +1,136 @@
+{% extends "feed/layout.html" %}
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+
+    <p>
+   <div class="container">
+       <br>
+       <br>
+<div class="col col-4">
+</div>
+<div class="col col-8 card mb-4  mt-3 top">
+      <div  class="card-body">
+        <p style="text-align:center; font-size: 30px"><img src="{{ post.author.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">{% block title %} {{ post.title }} {% endblock title %}</p>
+        <p style="text-align:center;" class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
+
+    <div class="row justify-content-center">
+     <div class="col-6 col-md-6">
+    <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel" style="justify-content:center">
+    <!--Indicators-->
+    <ol class="carousel-indicators">
+    {% for p in photos %}
+      <li data-target="#carousel-example-1z" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %} active {% endif %}"></li>
+    {% endfor %}
+    </ol>
+    <!--/.Indicators-->
+    <!--Slides-->
+    <div style="z-index: 1" class="carousel-inner" role="listbox">
+      {% for p in photos %}
+      <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+        <img class="d-block w-100" src="{{p.images.url}}"
+          alt="First slide">
+      </div>
+      {% endfor %}
+      <!--/First slide-->
+    <!--/.Slides-->
+    <!--Controls-->
+    <a class="carousel-control-prev" href="#carousel-example-1z" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carousel-example-1z" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+    <!--/.Controls-->
+  </div>
+  </div>
+  <p></p>
+          <p style="text-align:center;" class="card-text ">{{ post.content | safe }}</p>
+
+
+
+    </div>
+    
+    </div>
+       
+   </div> 
+
+      <div class="card-footer">
+
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Comment
+</button>
+
+      </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="card-body">
+            {% if new_comment %}
+            <div class="alert alert-success" role="alert">
+              Your comment is awaiting moderation
+            </div>
+            {% else %}
+            <form method="post">
+              {{ comment_form | crispy }}
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </form>
+            {% endif %}
+            </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div>
+
+    <div class="col-md-9 card mb-4  mt-3 ">
+      <div class="card-body">
+        <!-- comments -->
+        {% with comments.count as total_comments %}
+        <p  style="text-align:center; font-size: 30px">{{ total_comments }} Comment(s)</p>
+
+        <p>
+          {% endwith %} {% for comment in comments %}
+        </p>
+
+        <div class="comments" style="padding: 10px;">
+          <p class="font-weight-bold">
+          <div class="container">
+          <div class="row">
+          <div class="col-2">          
+            <img src="{{ comment.user.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">
+<br>
+ </div>
+ <div class="col">
+             {{ comment.user}} 
+            <span class=" text-muted font-weight-normal">
+              {{ comment.created_on|date:'M d, Y H:i' }}
+            </span>
+  
+            <br></br>
+
+          {{ comment.body | linebreaks }}
+        </div>          </div>
+            </div>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+    </div>
+        </div>
+    <br></br>
+
+
+{% endblock content %}

@@ -19,10 +19,13 @@ from users import views as user_views
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.conf import settings
+import notifications.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('feed.urls')),
+    path('', include('blog.urls')),
+    path('base/', include(notifications.urls)),
     path('users/', user_views.users_list, name='users_list'),
     path('users/<slug>/', user_views.profile_view, name='profile_view'),
     path('friends/', user_views.friend_list, name='friend_list'),

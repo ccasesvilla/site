@@ -35,7 +35,9 @@ INSTALLED_APPS = [
     #custom apps
     'users.apps.UsersConfig',
     'feed.apps.FeedConfig',
+    'blog.apps.BlogConfig',
     'crispy_forms',
+    'notifications',
 
 
     'django.contrib.admin',
