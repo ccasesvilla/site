@@ -105,18 +105,26 @@
 	    		</div>
 	    	</div>
 	    </div>
-	    <div class="row">
-	    	<div class="col-md-8">
+
+		<div class="col-md-9 card mb-4  mt-3">
+			<div class="card-body">
+			  <!-- comments -->
+			  {% with comments.count as total_comments %}
+			  <p  style="text-align:center; font-size: 30px">{{ total_comments }} Comment(s)</p>
+	  
+			  <p>
+				{% endwith %} 
 	    		{% if post.details.all %}
 	    		<div class="card card-signin my-5">
-	    		{% for detail in post.details.all %}
-	    			<div class="card-body">
-	    				<a href="{{ detail.username.profile.get_absolute_url }}">
-	    					<img src="{{ detail.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt="">
+					{% for comment in comments %}
+	    			<div class="card-body border">
+						
+	    				<a href="{{ comment.username.profile.get_absolute_url }}">
+	    					<img src="{{ comment.username.profile.image.url }}" class="rounded-circle" width="30" height="30" alt="">
 	    				</a>
-	          			<a class="text-dark" href="{{ detail.username.profile.get_absolute_url }}"><b>{{ detail.username }}</b></a>
-	          			<br><small>{{ detail.comment_date }}</small><br><br>
-	          			<p class="card-text text-dark">{{ detail.comment }}</p>
+	          			<a class="text-dark" href="{{ comment.username.profile.get_absolute_url }}"><b>{{ comment.username }}</b></a>
+	          			<br><small>{{ comment.comment_date }}</small><br><br>
+	          			<p class="card-text text-dark">{{ comment.comment }}</p>
 	    			</div>
 	    			<hr class="my-1">
 	    		{% endfor %}

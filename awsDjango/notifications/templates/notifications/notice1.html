@@ -1,0 +1,30 @@
+<div class="alert alert-block alert-{{ notice.level }}">
+    <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
+      <i class="icon-close"></i>
+    </a>
+    
+    <h4>
+      <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
+      <p class="text-capitalize">From : {{ notice.actor}} - On : {{ notice.verb }}</p>
+      {{ notice.action }} 
+  
+      {% if notice.target %}
+        Comment : {{ notice.target.body }}{{ notice.target.comment }}
+      {% endif %}
+    </h4>
+    
+    <p>{{ notice.timesince }} ago</p>
+  
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-primary active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+    <a href="{% url 'post-detail' notice.target.post.id %}">click me</a>
+  
+    
+    <div class="notice-actions">
+      {% for action in notice.data.actions %}
+        <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <br></br>

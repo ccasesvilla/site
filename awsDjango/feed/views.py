@@ -14,6 +14,15 @@ import json
 from django.forms import modelformset_factory
 
 
+from notifications import settings
+from notifications.models import Notification
+from notifications.signals import notify
+from notifications.utils import slug2id
+from swapper import load_model
+
+Notification = load_model('notifications', 'Notification')
+
+
 
 class PostListView(ListView):
     model = Post
@@ -63,6 +72,8 @@ def image_detail(request, id):
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     photos = PostImage.objects.filter(post=post)
+    comments = Comments.objects.filter(post=post).order_by("-comment_date")
+
     user = request.user
     is_liked =  Like.objects.filter(user=user, post=post)
     if request.method == 'POST':
@@ -72,10 +83,12 @@ def post_detail(request, pk):
             data.post = post
             data.username = user
             data.save()
+            sender = User.objects.get(username=request.user)
+            notify.send(sender, recipient=data.post.user_name, target=data, verb=data.post.description, description=data.post)
             return redirect('post-detail', pk=pk)
     else:
         form = NewCommentForm()
-    return render(request, 'feed/post_detail.html', {'post':post, 'is_liked':is_liked, 'form':form, 'photos': photos})
+    return render(request, 'feed/post_detail.html', {'post':post, 'is_liked':is_liked, 'form':form, 'photos': photos, 'comments': comments})
 
 @login_required
 def create_post(request):

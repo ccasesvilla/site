@@ -5,20 +5,27 @@
   
   <h4>
     <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
-    <p class="text-capitalize">From : {{ notice.actor}} - on Blog : {{ notice.verb }}</p>
+    <p class="text-capitalize">From : {{ notice.target.username }}{{notice.target.user}} - On : {{ notice.target.post.description}}{{ notice.target.post.title}}</p>
     {{ notice.action }} 
+    
 
     {% if notice.target %}
-      Comment : {{ notice.target.body }}
+      Comment : {{ notice.target.body }}{{ notice.target.comment }}
     {% endif %}
   </h4>
-  
+
+
   <p>{{ notice.timesince }} ago</p>
 
+  {% if notice.target.user %}
   <a href="{% url 'blog:blog_detail' notice.description %}" class="btn btn-primary">Go to Post &rarr;</a>
+  {% endif %}
+  {% if notice.target.username %}
+  <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-primary">Go to Post &rarr;</a>
+  {% endif %}
+
   <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-primary">Mark as Read</a>
   <a style="border-width: 2px;" class="btn btn-primary active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
-
 
   
   <div class="notice-actions">

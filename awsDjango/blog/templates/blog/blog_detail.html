@@ -102,31 +102,39 @@
         <p  style="text-align:center; font-size: 30px">{{ total_comments }} Comment(s)</p>
 
         <p>
-          {% endwith %} {% for comment in comments %}
-        </p>
-
+          {% endwith %}
+         
+          {% for comment in comments %}
+        
+            <div class="card-body border">
         <div class="comments" style="padding: 10px;">
           <p class="font-weight-bold">
           <div class="container">
           <div class="row">
-          <div class="col-2">          
-            <img src="{{ comment.user.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">
+          <div class="col-2"> 
+            <a href="{{ comment.user.profile.get_absolute_url }}">        
+            <img src="{{ comment.user.profile.image.url }}" alt="mdo" width="35" height="35" class="rounded-circle"></a> 
 <br>
- </div>
- <div class="col">
-             {{ comment.user}} 
-            <span class=" text-muted font-weight-normal">
-              {{ comment.created_on|date:'M d, Y H:i' }}
-            </span>
-  
-            <br></br>
 
-          {{ comment.body | linebreaks }}
-        </div>          </div>
-            </div>
+  <a class="text-dark" href="{{ comment.user.profile.get_absolute_url }}"> 
+            <b>{{ comment.user}}</b>  </a>
+            <span class=" text-muted font-weight-normal">
+              <br><small> {{ comment.created_on|date:'M d, Y H:i' }}</small><br>
+            </span>
+          </div>
+          <div class="col">
+
+
+            <p class="card-text text-dark">{{ comment.body | linebreaks }}</p>
+        </div> 
+        <hr class="my-1">
+      </div>
+      </div></div>
+    
             </div>
         {% endfor %}
       </div>
+      
     </div>
     </div>
         </div>
