@@ -9,24 +9,25 @@ admin.site.register(Entry)
 
 
   
-#admin.site.register(Post)
+admin.site.register(Post)
+admin.site.register(PostImage)
 admin.site.register(Comment)
 
 
 
-class PostImageAdmin(admin.StackedInline):
-    model = PostImage
+# class PostImageAdmin(admin.StackedInline):
+#     model = PostImage
     
     
-@admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
-    inlines = [PostImageAdmin]
+# @admin.register(Post)
+# class PostAdmin(admin.ModelAdmin):
+#     inlines = [PostImageAdmin]
     
-    class Meta:
-        model = Post
+#     class Meta:
+#         model = Post
         
-@admin.register(PostImage)
-class PostImageAdmin(admin.ModelAdmin):
-    pass
+# @admin.register(PostImage)
+# class PostImageAdmin(admin.ModelAdmin):
+#     pass
 
-# Register your models here.
+# # Register your models here.

@@ -127,7 +127,7 @@ def create_post(request):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	model = Post
-	fields = ['description', 'pic', 'tags']
+	fields = ['description', 'cover_Pic', 'tags']
 	template_name = 'feed/create_post.html'
 
 	def form_valid(self, form):
@@ -148,16 +148,43 @@ def post_delete(request, pk):
 	return redirect('home')
 
 
+
+# from django.contrib.postgres.search import SearchQuery
+
+# def search_posts(request):
+# 	query = request.GET.get('p')
+# 	object_list = SearchQuery(query)
+
+# 	context ={
+# 		'posts': object_list,
+# 	    }
+# 	return render(request, "feed/search_posts.html", context)
+
+import blog.models as bd
+
 @login_required
 def search_posts(request):
-	query = request.GET.get('p')
-	object_list = Post.objects.filter(tags__icontains=query)
-	liked = [i for i in object_list if Like.objects.filter(user = request.user, post=i)]
-	context ={
-		'posts': object_list,
-		'liked_post': liked
-	}
-	return render(request, "feed/search_posts.html", context)
+    query = request.GET.get('p')
+    object_list = Post.objects.filter(tags__icontains=query)
+    entries = bd.Entry.objects.filter(text__contains=query)
+    blogs = Post.objects.filter(description=query)
+    comments = Comments.objects.filter(comment=query)
+    topics = bd.Post.objects.filter(title__contains=query)
+    topics = bd.Post.objects.filter(content__contains=query)
+
+    lengths = (len(entries)+len(blogs)+len(comments)+len(topics)+len(object_list))
+
+    liked = [i for i in object_list if Like.objects.filter(user = request.user, post=i)]
+    context ={
+        'lengths':lengths,
+        'posts': object_list,
+        'liked_post': liked,
+        'comments':comments, 
+        'entries': entries, 
+        'topics':topics, 
+        'blogs':blogs
+    }
+    return render(request, "feed/search_posts.html", context)
 
 @login_required
 def like(request):

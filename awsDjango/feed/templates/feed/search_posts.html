@@ -10,6 +10,87 @@
 {% endblock searchform %}
 {% block content %}
  	<div class="container">
+		<br></br>
+		<br></br>
+		<br></br>
+
+        <p  style="text-align:center; font-size: 30px">{{ lengths }} Search Result(s)</p>
+
+ 
+		<br>
+
+
+		
+
+		{% if entries.count != 0 %}
+		<p></p>
+		{% endif %}
+		
+
+
+		{% if comments.count != 0 %}
+		<p></p>
+		{% endif %}
+      
+
+
+		{% if topics.count != 0 %}
+		<p></p>
+		{% endif %}
+			
+
+
+		{% if blogs.count != 0 %}
+		<p></p>
+		{% endif %}
+
+
+		{% for entry in entries %}
+		<div class="card card-signin my-5">	
+			<div class="card-body">
+		
+
+		{{ entry.topic }} - {{ entry.date_added }}<p>1</p>
+		{{ entry.text}}<p></p>
+		
+	</div>
+</div>
+{% endfor %}
+
+		{% for comment in comments %}
+		<div class="card">
+			<div class="card-body">
+
+		{{ comment.description }} - {{ comment.comment_date}}<p>2</p>
+	
+	</div>
+</div>	
+{% endfor %}
+		
+{% for topic in topics %}
+<div class="card card-signin my-5">
+	
+	<div class="card-body">
+
+		{{ topic.title }} - {{ topic.created_on}}<p>3</p>
+		{{ topic.content}}<p></p>
+	</div>
+</div>	
+		{% endfor %}
+
+{% for blog in blogs %}
+<div class="card card-signin my-5">
+	<div class="card-body">
+
+
+		{{ blog.description}} - {{ blog.date_posted }}<p>4</p>
+
+		
+	</div>
+</div>
+{% endfor %}
+</div>
+</div>
 	    <div class="row">
 	      <div class="col-md-8">
 	      	{% if not posts %}

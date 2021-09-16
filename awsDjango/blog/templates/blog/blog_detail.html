@@ -8,15 +8,14 @@
    <div class="container">
        <br>
        <br>
-<div class="col col-4">
-</div>
-<div class="col col-8 card mb-4  mt-3 top">
+
+<div class="col col-10 card">
       <div  class="card-body">
         <p style="text-align:center; font-size: 30px"><img src="{{ post.author.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">{% block title %} {{ post.title }} {% endblock title %}</p>
         <p style="text-align:center;" class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
 
     <div class="row justify-content-center">
-     <div class="col-6 col-md-6">
+     <div class="col-12 col-md-6">
     <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel" style="justify-content:center">
     <!--Indicators-->
     <ol class="carousel-indicators">
@@ -56,9 +55,10 @@
     
     </div>
        
-   </div> 
+  </div> 
+  
 
-      <div class="card-footer">
+      <div class="card-footer"style="width:100%;">
 
 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
   Comment
@@ -99,7 +99,7 @@
       <div class="card-body">
         <!-- comments -->
         {% with comments.count as total_comments %}
-        <p  style="text-align:center; font-size: 30px">{{ total_comments }} Comment(s)</p>
+        <p  style="text-align:center; font-size: 25px">{{ total_comments }} Comment(s)</p>
 
         <p>
           {% endwith %}

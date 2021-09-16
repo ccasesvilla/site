@@ -1,0 +1,105 @@
+
+
+{% block content %}
+
+	{% if searched %}
+  <br></br>
+
+<center>		
+<div class="col col-12">
+  <br></br>
+  <br></br>
+        <div class="border bg-light">
+        <p class="text-decoration-underline p-1 fw-bold" style="text-align:center"> Search Results for : {{ searched }}</p>		
+		{% for entry in entries %}
+		
+
+        <div class="container border bg-light">
+          <div class="row g-2">
+            <div class="col-12 col-sm-4">
+              <div class="m-1 border border-5 bg-light">
+
+			     <a style="font-size: 24px;" href="{% url 'blog:show_results' entry.id %}" class="text-capitalize"> {{ entry.topic }}</a>
+            <p>- {{ entry.topic.owner }}</p>
+			     {{ entry.date_added }}
+               </div>
+                 </div>              
+                <div class="col-sm-6 col-md-8">
+                  <div class="p-3">         
+               {{ entry.text }}
+			     
+                </div>
+              </div>
+             </div>
+           </div> 
+		{% endfor %}
+	{% else %}
+		<h1>Hey! You Forgot To Search For A Entry...</h1>
+	{% endif %}	
+
+	
+			{% for topic in topics %}
+		
+
+        <div class="col-12 border bg-light">
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <div class="m-1 border border-5 bg-light">
+
+             <p> {{ topic.title }}</p>          
+            <p> {{ topic.author }}</p>
+			     {{ topic.created_on }}
+               </div>
+                 </div>              
+                <div class="col-sm-6 col-md-8">
+                  <div class="p-3">         
+               {{ topic.content }}
+             <a href="{% url 'topic' topic.slug  %}" class="btn btn-primary">Read More &rarr;</a>			     
+                </div>
+              </div>
+             </div>
+           </div> 
+		{% endfor %}
+		
+    {% for blog in blogs %}
+		
+
+    <div class="col-12 border bg-light">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="m-1 border border-5 bg-light">
+
+         <p> {{ blog.title }}</p>          
+        <p> {{ blog.author }}</p>
+       {{ topic.created_on }}
+           </div>
+             </div>              
+            <div class="col-sm-6 col-md-8">
+              <div class="p-3">         
+           {{ topic.content }}
+         <a href="{% url 'blog:blog_detail' topic.slug  %}" class="btn btn-primary">Read More &rarr;</a>			     
+            </div>
+          </div>
+         </div>
+       </div> 
+{% endfor %}
+
+	</div>
+	    <br>
+    <br>
+	<br>
+    <br>
+	<br>
+    <br>
+    <br>
+    <br>
+	<br>
+    <br>
+	<br>
+    <br>
+    <br>
+	
+</center>
+	
+
+{% endblock %}

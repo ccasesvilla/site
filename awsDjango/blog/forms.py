@@ -20,19 +20,21 @@ class EntryForm(forms.ModelForm):
         labels = {'text': ''}
         widgets = {'text': forms.Textarea(attrs={'cols': 80})}
         
-        
-        
-class PostForm(forms.ModelForm):
+class PostImageForm(forms.ModelForm):
+
+
     class Meta:
+
+        fields =  ['images']        
+        
+class PostForm(PostImageForm):
+    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),required=False)  
+    class Meta(PostImageForm.Meta):
         model = Post
-        fields = ['title', 'slug','content','status']
+        fields = PostImageForm.Meta.fields + ['title', 'slug','content','status','images']
         
 
-class PostImageForm(forms.ModelForm):
-    class Meta:
-        model = PostImage
-        extra = 3
-        fields = ['images']
+
 
 
 

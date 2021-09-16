@@ -1,0 +1,55 @@
+{% extends "feed/layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block searchform %}
+<form class="d-flex form-control-lg" method="get" action="{% url 'blog:search_results' %}">
+  
+
+  <input class="form-control" type="text" placeholder="Search" aria-label="Search" name="searched">
+  <button class="btn btn-outline-secondary" type="submit">Search</button>
+  </form>
+  {% endblock searchform %}
+
+
+
+
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+<br></br>
+<br></br>
+
+<div class="container">
+<div clas="row">
+  <div class="col-4">
+  </div>
+  <div class="col-8">
+
+  <p>Add A New Topic : </p>
+  
+  <form action="{% url 'blog:new_topic' %}" method='post'>
+    {% csrf_token %}
+    <p>{{ form|crispy }}</p>
+    <button class="text-center" name='submit'>Add Topic</button>
+  </form>
+
+</div>
+</div>
+<br></br>
+<br></br>
+<br></br>
+<div class="d-none d-md-block">
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+</div>
+</div>
+
+  
+{% endblock content %}

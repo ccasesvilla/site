@@ -26,11 +26,20 @@ def topic(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
     # Make sure the topic belongs to the current user.
     if topic.owner != request.user:
-        return render(request, 'learning_logs/index.html')
+        return render(request, 'blog/topics.html')
     
     entries = topic.entry_set.order_by('-date_added')
     context = {'topic': topic, 'entries': entries}
-    return render(request, 'learning_logs/topic.html', context)
+    return render(request, 'blog/topic.html', context)
+
+
+@login_required
+def topics(request):
+    """Show all topics."""
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    context = {'topics': topics}
+    return render(request, 'blog/topics.html', context)
+
 
 
 @login_required
@@ -46,11 +55,11 @@ def new_topic(request):
             new_topic = form.save(commit=False)
             new_topic.owner = request.user
             new_topic.save()
-            return redirect('learning_logs:topics')
+            return redirect('blog:topics')
         
     # Display a blank or invalid form.
     context = {'form': form}
-    return render(request, 'learning_logs/new_topic.html', context)
+    return render(request, 'blog/new_topic.html', context)
 
 
 @login_required
@@ -68,10 +77,10 @@ def new_entry(request, topic_id):
             new_entry = form.save(commit=False)
             new_entry.topic = topic
             new_entry.save()
-            return redirect('learning_logs:topic', topic_id=topic_id)
+            return redirect('blog:topic', topic_id=topic_id)
     # Display a blank or invalid form.
     context = {'topic': topic, 'form': form}
-    return render(request, 'learning_logs/new_entry.html', context)
+    return render(request, 'blog/new_entry.html', context)
 
 
 
@@ -84,7 +93,7 @@ def edit_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
     if topic.owner != request.user:
-        return render(request, 'learning_logs/index.html')
+        return render(request, 'blog/topics.html')
     
     if request.method != 'POST':
         # Initial request; pre-fill form with the current entry.
@@ -94,10 +103,10 @@ def edit_entry(request, entry_id):
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('learning_logs:topic', topic_id=topic.id)
+            return redirect('blog:topic', topic_id=topic.id)
     
     context = {'entry': entry, 'topic': topic, 'form': form}
-    return render(request, 'learning_logs/edit_entry.html', context)
+    return render(request, 'blog/edit_entry.html', context)
         
 
 
@@ -115,28 +124,31 @@ def delete_entry(request, entry_id):
 
     return redirect('learning_logs:topic', topic_id=topic.id)
     
-
+import feed.models as feeds
 
 @login_required
 def search(request):
     if request.method == "POST":
-  
+      
         searched = request.POST['searched']
         entries = Entry.objects.filter(text__contains=searched)
-
+        blogs = feeds.Post.objects.filter(description=searched)
+        comments = feeds.Comments.objects.filter(post=searched)
         topics = Post.objects.filter(content__contains=searched)
         topics = Post.objects.filter(title__contains=searched)
 
-        return render(request, 'learning_logs/search_results.html', {'searched': searched, 'entries': entries, 'topics':topics})
+        length = (len(entries)+len(blogs)+len(comments)+len(topics))
+
+        return render(request, 'blog/show_results.html', {'length':length,'searched': searched, 'comments':comments, 'entries': entries, 'topics':topics, 'blogs':blogs})
     else:
-        return render(request, 'learning_logs/search_results.html')
+        return render(request, 'blog/show_results.html')
 
 
 
 @login_required
 def show_results(request, entry_id):
 	entry = Entry.objects.get(pk=entry_id)
-	return render(request, 'learning_logs/show_results.html', 
+	return render(request, 'blog/show_results.html', 
 		{'entry': entry})
 
 
@@ -147,7 +159,7 @@ def PostList(request):
     
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)    
-    
+
 
         
     return render(request, 'learning_logs/index.html', {'page_obj': page_obj})
@@ -156,11 +168,30 @@ def Blog_List1(request):
     queryset = Post.objects.filter(status=1).order_by("-created_on")
 
     paginator = Paginator(queryset, 5)
-    
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'blog/blog_list.html', {'page_obj': page_obj})
+    for page in queryset:
+        photos = PostImage.objects.filter(post=page)
+        #return render(request, 'blog/blog_list.html', {'photos': photos})
 
+
+    
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'blog/blog_list.html', {'page_obj': page_obj})
+
+
+def postimage_list(request, slug):
+    template_name = "blog/blog_list.html"
+    post = get_object_or_404(Post, slug=slug)
+    photos = PostImage.objects.filter(post=post)
+
+    return render(
+        request,
+        template_name,
+        {
+            "photos": photos,
+
+        },
+    )
 
 
 def delete(request, slug=None):
@@ -250,45 +281,50 @@ def blog_detail(request, slug):
 
 
 
+
+
+
+
+
+
 def new_blog(request):
 
     
-    ImageFormSet = modelformset_factory(PostImage,
-                                        form=PostImageForm, extra=3)
+    #ImageFormSet = modelformset_factory(PostImage,
+                                       # form=PostImageForm, extra=3)
 
     if request.method == 'POST':
-        formset = ImageFormSet(request.POST, request.FILES,
-                               queryset=PostImage.objects.none())
-        postForm = PostForm(request.POST)
-
-        if postForm.is_valid() and formset.is_valid():
+        #formset = ImageFormSet(request.POST, request.FILES,
+                               #queryset=PostImage.objects.none())
+        postForm = PostForm(request.POST or None)
+        files = request.FILES.getlist('images')
+        if postForm.is_valid():
             post_form = postForm.save(commit=False)
             post_form.author = request.user
             post_form.save()
     
-            for form in formset.cleaned_data:
+            #for form in formset.cleaned_data:
                 #this helps to not crash if the user   
                 #do not upload all the photos
-                if form:
-                    images = form['images']
-                    photo = PostImage(post=post_form, images=images)
-                    photo.save()
+            for f in files:
+                photo = PostImage.objects.create(post=post_form.title, images=f)
+                photo.save()
             # use django messages framework
             messages.success(request,
                              "Yeeew, check it out on the home page!")
             return HttpResponseRedirect("/")
         else:
-            print(postForm.errors, formset.errors)
+            print(postForm.errors)
     else:
         postForm = PostForm()
-        formset = ImageFormSet(queryset=PostImage.objects.none())
+        #formset = ImageFormSet(queryset=PostImage.objects.none())
     return render(request, 'blog/new_blog.html',
-                  {'postForm': postForm, 'formset': formset})
+                  {'postForm': postForm})
 
 
 
 @login_required
-def blog_l(request):
+def in_progress(request):
     entry = Post.objects.filter(status=0).order_by("-created_on")
     return render(request, 'in_progress.html', 
 		{'entry': entry})

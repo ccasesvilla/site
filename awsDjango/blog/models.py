@@ -64,8 +64,8 @@ class Post(models.Model):
     
     
     
-class PostImage(models.Model):
-    post = models.ForeignKey(Post, default=None, on_delete=models.CASCADE)
+class PostImage(Post):
+    post = models.FileField(default=1, blank=True)
     images = models.FileField(upload_to ='post_pics', blank=True, default=None)
     
     def __str__(self):
