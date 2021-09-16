@@ -243,7 +243,7 @@ def delete_notifications (request, slug):
 def blog_detail(request, slug):
     template_name = "blog/blog_detail.html"
     post = get_object_or_404(Post, slug=slug)
-    photos = PostImage.objects.filter(post=post)
+    photos = Post.objects.filter(title=post.slug)
     comments = post.comments.filter(active=True).order_by("-created_on")
     new_comment = None
     # Comment posted
@@ -284,7 +284,7 @@ def blog_detail(request, slug):
 
 
 
-
+import datetime
 
 
 def new_blog(request):
@@ -302,12 +302,13 @@ def new_blog(request):
             post_form = postForm.save(commit=False)
             post_form.author = request.user
             post_form.save()
+            post_form.created_on = datetime.datetime.now()
     
             #for form in formset.cleaned_data:
                 #this helps to not crash if the user   
                 #do not upload all the photos
             for f in files:
-                photo = PostImage.objects.create(post=post_form.title, images=f)
+                photo = PostImage.objects.create(post=post_form.id, images=f)
                 photo.save()
             # use django messages framework
             messages.success(request,
