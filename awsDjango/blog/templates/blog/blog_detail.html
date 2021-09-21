@@ -1,18 +1,48 @@
 {% extends "feed/layout.html" %}
+{% load static %}
+{% block cssfiles %}
+{% endblock cssfiles %}
 {% block content %}
 
 {% load crispy_forms_tags %}
+<head>
+  <meta charset="utf-8mb4">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.tiny.cloud/1/7op7nw7ux5rjy9gv3rjft1amkh0pv6rg3qsbh1whmqsjd9tj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+  selector: 'textarea',
+  menubar: false,
+  plugins: 'emoticons advlist link image lists',
+  toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+  emoticons_database: 'emojis'
+});
+</script>
+</head>
 
 
     <p>
    <div class="container">
-       <br>
+       <br></br>
        <br>
 
 <div class="col col-10 card">
       <div  class="card-body">
         <p style="text-align:center; font-size: 30px"><img src="{{ post.author.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">{% block title %} {{ post.title }} {% endblock title %}</p>
         <p style="text-align:center;" class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
+           
+
+
+
+
+
 
     <div class="row justify-content-center">
      <div class="col-12 col-md-6">
@@ -47,7 +77,7 @@
   </div>
   </div>
   <p></p>
-          <p style="text-align:center;" class="card-text ">{{ post.content | safe }}</p>
+          <p style="text-align:center;" class="card-text "> {{ post.content }} </p>
 
 
 
@@ -102,39 +132,31 @@
         <p  style="text-align:center; font-size: 25px">{{ total_comments }} Comment(s)</p>
 
         <p>
-          {% endwith %}
-         
-          {% for comment in comments %}
-        
-            <div class="card-body border">
+          {% endwith %} {% for comment in comments %}
+        </p>
+
         <div class="comments" style="padding: 10px;">
           <p class="font-weight-bold">
           <div class="container">
           <div class="row">
-          <div class="col-2"> 
-            <a href="{{ comment.user.profile.get_absolute_url }}">        
-            <img src="{{ comment.user.profile.image.url }}" alt="mdo" width="35" height="35" class="rounded-circle"></a> 
+          <div class="col-2">          
+            <img src="{{ comment.user.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">
 <br>
-
-  <a class="text-dark" href="{{ comment.user.profile.get_absolute_url }}"> 
-            <b>{{ comment.user}}</b>  </a>
+ </div>
+ <div class="col">
+             {{ comment.user}} 
             <span class=" text-muted font-weight-normal">
-              <br><small> {{ comment.created_on|date:'M d, Y H:i' }}</small><br>
+              {{ comment.created_on|date:'M d, Y H:i' }}
             </span>
-          </div>
-          <div class="col">
+  
+            <br></br>
 
-
-            <p class="card-text text-dark">{{ comment.body | linebreaks }}</p>
-        </div> 
-        <hr class="my-1">
-      </div>
-      </div></div>
-    
+          {{ comment.body | linebreaks }}
+        </div>          </div>
+            </div>
             </div>
         {% endfor %}
       </div>
-      
     </div>
     </div>
         </div>
@@ -142,3 +164,30 @@
 
 
 {% endblock content %}
+
+{% block jsfiles %}
+<script>
+	$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("Unlike");
+            $('#likebtn' + id).css("color", "red")
+          }
+          else{
+            $('#likebtn' + id).html("Like");
+            $('#likebtn' + id).css("color", "green")
+          }
+        }
+      })
+});
+</script>
+{% endblock jsfiles %}

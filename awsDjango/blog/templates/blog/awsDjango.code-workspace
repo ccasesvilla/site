@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"name": "awsDjango",
+			"path": "../../.."
+		},
+		{
+			"name": "tinymce",
+			"path": "../../../../../../aws-django-virt/lib/python3.8/site-packages/tinymce"
+		}
+	],
+	"settings": {
+		"githubPullRequests.remotes": [
+			"origin",
+			"upstream",
+			"new"
+		],
+		"liveServer.settings.multiRootWorkspaceName": "DJangoAWS"
+	}
+}

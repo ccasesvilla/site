@@ -72,14 +72,15 @@ def image_detail(request, id):
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     photos = PostImage.objects.filter(post=post)
+    user = request.user
     comments = Comments.objects.filter(post=post).order_by("-comment_date")
 
-    user = request.user
     is_liked =  Like.objects.filter(user=user, post=post)
     if request.method == 'POST':
         form = NewCommentForm(request.POST)
         if form.is_valid():
             data = form.save(commit=False)
+            data.comment = data.comment[3:-4]
             data.post = post
             data.username = user
             data.save()
@@ -88,7 +89,9 @@ def post_detail(request, pk):
             return redirect('post-detail', pk=pk)
     else:
         form = NewCommentForm()
-    return render(request, 'feed/post_detail.html', {'post':post, 'is_liked':is_liked, 'form':form, 'photos': photos, 'comments': comments})
+    return render(request, 'feed/post_detail.html', {'post':post, 'is_liked':is_liked, 'form':form, 'photos': photos, 'comments':comments})
+
+
 
 @login_required
 def create_post(request):
@@ -97,10 +100,13 @@ def create_post(request):
 
         if request.method == "POST":
             # formset = ImageFormSet(request.POST, request.FILES)
-            form = PostImageForm(request.POST or None, request.FILES or None)
+            form = NewPostForm(request.POST or None, request.FILES or None)
             files = request.FILES.getlist('images')
             if form.is_valid():
                 data = form.save(commit=False)
+                data.description = data.description[3:-4]
+                data.tags = data.tags[3:-4]
+                print(data.tags,data.description)
                 
                 data.user_name = request.user
              
@@ -117,7 +123,7 @@ def create_post(request):
                 messages.success(request, f'Posted Successfully')
                 return redirect('home')
         else:
-            form = PostImageForm()
+            form = NewPostForm()
             # formset = ImageFormSet()
         return render(request, 'feed/create_post.html', {'form':form})
 
@@ -161,28 +167,38 @@ def post_delete(request, pk):
 # 	return render(request, "feed/search_posts.html", context)
 
 import blog.models as bd
+from django.db.models import Q
+import users.models as ud
 
-@login_required
+
 def search_posts(request):
     query = request.GET.get('p')
-    object_list = Post.objects.filter(tags__icontains=query)
+    user = User.objects.filter(username__contains=query)
+    users = ud.Profile.objects.filter(Q(slug__contains=query)|Q(first_name__contains=query)|Q(last_name__contains=query)|Q(status__contains=query)|Q(bio__contains=query)|Q(description__contains=query)|Q(interests__contains=query))
+    #user_posts =  Post.objects.filter(user_name=users)
+
+    topics = bd.Topic.objects.filter(text__icontains=query)
     entries = bd.Entry.objects.filter(text__contains=query)
-    blogs = Post.objects.filter(description=query)
+    posts = Post.objects.filter(Q(description=query)|Q(tags__contains=query))
     comments = Comments.objects.filter(comment=query)
-    topics = bd.Post.objects.filter(title__contains=query)
-    topics = bd.Post.objects.filter(content__contains=query)
+    blogcomments = bd.Comment.objects.filter(Q(body__contains=query)|Q(email__contains=query))
+    blogs = bd.Post.objects.filter(Q(content__contains=query)|Q(title__contains=query))
 
-    lengths = (len(entries)+len(blogs)+len(comments)+len(topics)+len(object_list))
+    lengths = (len(entries)+len(blogs)+len(comments)+len(topics)+len(posts)+len(blogcomments)+len(users))
 
-    liked = [i for i in object_list if Like.objects.filter(user = request.user, post=i)]
+    liked = [i for i in posts if Like.objects.filter(user = request.user, post=i)]
     context ={
         'lengths':lengths,
-        'posts': object_list,
+        'topics': topics,
         'liked_post': liked,
         'comments':comments, 
         'entries': entries, 
-        'topics':topics, 
-        'blogs':blogs
+        'blogs':blogs,
+        'blogcomments':blogcomments, 
+        'posts':posts,
+      #  'user':user,
+        'users':users,
+       # 'user_posts': user_posts,
     }
     return render(request, "feed/search_posts.html", context)
 

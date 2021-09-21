@@ -2,6 +2,11 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
+from tinymce.widgets import TinyMCE
+
+class TinyMCEWidget(TinyMCE):
+    def use_required_attribute(self, *args):
+        return False
 
 
 class UserRegisterForm(UserCreationForm):
@@ -21,6 +26,7 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    bio = forms.CharField(widget=TinyMCEWidget(attrs={'required': False, 'cols': 30, 'rows': 2}))
     class Meta:
         model = Profile
-        fields =  ['first_name','last_name','status','bio', 'interests','description','image']
+        fields =  ['bio','first_name','last_name','status', 'interests','description','image']

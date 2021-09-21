@@ -18,14 +18,19 @@
     <ul>
       {% for topic in topics %}
     <ul class="bi bi-vector-pen" style="font-size: 1.25rem;">      
-      <a style="text-align:center;" href="{% url 'blog:topic' topic.id %}">{{ topic }}</a>
+      <a class="text-capitalize" style="text-align:center;" href="{% url 'blog:topic' topic.id %}">{{ topic }}</a>
       <p>
     </ul>
       {% empty %}
     <li>No topics have been added yet.</li>
-      {% endfor %}
+
+
+{% endfor %}
+      
     </ul>
   </div>
+
+
   <div class="d-none d-md-block">
   <br></br>
   <br></br>

@@ -99,6 +99,9 @@ def delete_friend(request, id):
 	friend_profile.friends.remove(user_profile)
 	return HttpResponseRedirect('/users/{}'.format(friend_profile.slug))
 
+
+from blog.models import Post as pt
+
 @login_required
 def profile_view(request, slug):
 	p = Profile.objects.filter(slug=slug).first()
@@ -106,6 +109,7 @@ def profile_view(request, slug):
 	sent_friend_requests = FriendRequest.objects.filter(from_user=p.user)
 	rec_friend_requests = FriendRequest.objects.filter(to_user=p.user)
 	user_posts = Post.objects.filter(user_name=u)
+	user_blogs = pt.objects.filter(author=u)
 
 	friends = p.friends.all()
 
@@ -130,7 +134,8 @@ def profile_view(request, slug):
 		'friends_list': friends,
 		'sent_friend_requests': sent_friend_requests,
 		'rec_friend_requests': rec_friend_requests,
-		'post_count': user_posts.count
+		'post_count': user_posts.count,
+		'blog_count': user_blogs.count
 	}
 
 	return render(request, "users/profile.html", context)
@@ -153,8 +158,12 @@ def edit_profile(request):
 		u_form = UserUpdateForm(request.POST, instance=request.user)
 		p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
 		if u_form.is_valid() and p_form.is_valid():
+			data = p_form.save(commit=False)
+			data.bio = data.bio[3:-4]
+			data.description = data.description[3:-4]
+			data.interests = data.interests[3:-4]
 			u_form.save()
-			p_form.save()
+			data.save()
 			messages.success(request, f'Your account has been updated!')
 			return redirect('my_profile')
 	else:
@@ -173,6 +182,7 @@ def my_profile(request):
 	sent_friend_requests = FriendRequest.objects.filter(from_user=you)
 	rec_friend_requests = FriendRequest.objects.filter(to_user=you)
 	user_posts = Post.objects.filter(user_name=you)
+	user_blogs = pt.objects.filter(author=you)
 	friends = p.friends.all()
 
 	# is this user our friend
@@ -195,7 +205,8 @@ def my_profile(request):
 		'friends_list': friends,
 		'sent_friend_requests': sent_friend_requests,
 		'rec_friend_requests': rec_friend_requests,
-		'post_count': user_posts.count
+		'post_count': user_posts.count,
+		'blog_count': user_blogs.count
 	}
 
 	return render(request, "users/profile.html", context)

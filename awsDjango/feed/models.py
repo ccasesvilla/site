@@ -13,7 +13,7 @@ class Post(models.Model):
 	tags = models.CharField(max_length=100, blank=True)
 
 
-    
+     
 
 	def __str__(self):
 		return self.description
@@ -37,7 +37,7 @@ class PostImage(models.Model):
 class Comments(models.Model):
 	post = models.ForeignKey(Post, related_name='details', on_delete=models.CASCADE)
 	username = models.ForeignKey(User, related_name='details', on_delete=models.CASCADE)
-	comment = models.CharField(max_length=255)
+	comment = models.CharField(max_length=300, blank=True)
 	comment_date = models.DateTimeField(default=timezone.now)
 
 

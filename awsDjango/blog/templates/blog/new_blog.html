@@ -3,9 +3,32 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
+{% static 'emoji-picker-panel.css' %}
+<head>
+    <meta charset="utf-8mb4">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
 
-<div class="container">
+    <script src="https://cdn.tiny.cloud/1/7op7nw7ux5rjy9gv3rjft1amkh0pv6rg3qsbh1whmqsjd9tj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    menubar: false,
+    plugins: 'emoticons advlist link image lists',
+    toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+    emoticons_database: 'emojis'
+  });
+</script>
+</head>
+
+
+<body>
+<div class="container"> 
     <br></br>
     <br></br>
 <div class="col-4">
@@ -16,25 +39,31 @@
 
 <form id="post_form" method="post" action="" enctype="multipart/form-data">
 
-<div class="col-11">
-
+<div id="content" class="col-11">
 
 
     {% csrf_token %}
 
 
-    
-    {{ postForm|crispy }}
- 
+{{ postForm|crispy}}
 
 
-</div>
 
- <br></br>
-    <input type="submit" name="submit" value="Submit" />
+
+
+
+<input type="submit" name="submit" value="Submit" />
+
 </form>
 </div>
 <br></br>
 <br></br>
+</div>
 
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
 {% endblock content %}

@@ -18,12 +18,12 @@ from django.urls import path, include
 from users import views as user_views
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
+from django.conf.urls import url
 from django.conf import settings
 import notifications.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('my-profile/', user_views.my_profile, name='my_profile'),
 
     path('base/', include(notifications.urls)),
     path('users/', user_views.users_list, name='users_list'),
@@ -35,6 +35,7 @@ urlpatterns = [
     path('users/friend-request/delete/<int:id>/', user_views.delete_friend_request, name='delete_friend_request'),
     path('users/friend/delete/<int:id>/', user_views.delete_friend, name='delete_friend'),
     path('edit-profile/', user_views.edit_profile, name='edit_profile'),
+    path('my-profile/', user_views.my_profile, name='my_profile'),
     path('search_users/', user_views.search_users, name='search_users'),
     path('register/', user_views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
@@ -43,8 +44,11 @@ urlpatterns = [
     path('password-reset/done/', auth_views.PasswordResetView.as_view(template_name='users/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), name='password_reset_complete'),
+    path('tinymce/', include('tinymce.urls')),
     path('', include('feed.urls')),
     path('', include('blog.urls')),
+
+    url(r'^emoji/', include('emoji.urls')),
 ]
 
 if settings.DEBUG:

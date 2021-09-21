@@ -1,5 +1,7 @@
 {% extends "feed/layout.html" %}
-
+{% load static %}
+{% block cssfiles %}
+{% endblock cssfiles %}
 {% block content %}
 <br>
 <br>
@@ -16,16 +18,9 @@
           <a class="text-dark" href="{{ post.author.profile.get_absolute_url }}"><b>{{ post.author }}</b></a>
           <br><small class="text-muted">Posted on {{ post.created_on }}</small>
           <br><br>
-
-          <p class="card-text text-dark">{{ post.content }}</p>
+           {{ post.title }}<p> </p>
+         {{post.content}}
         </div>
-        <a href="{% url 'post-detail' post.id %}"><img class="card-img-top" class="img-fluid" alt="" src="{{ post.cover_Pic.url }}" alt=""></a>
-
- 
-
-
-        <img class="card-img-top" class="img-fluid" alt="" src="{{ post.images.url }}" alt="">
-       {{ post.images.count }}
 
         <div class="card-footer">
  
@@ -60,3 +55,29 @@
 </div>
                      
 {% endblock content %}
+{% block jsfiles %}
+<script>
+	$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("Unlike");
+            $('#likebtn' + id).css("color", "red")
+          }
+          else{
+            $('#likebtn' + id).html("Like");
+            $('#likebtn' + id).css("color", "green")
+          }
+        }
+      })
+});
+</script>
+{% endblock jsfiles %}

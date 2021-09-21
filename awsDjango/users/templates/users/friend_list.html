@@ -1,20 +1,13 @@
-{% extends "feed/layout.html" %} {% load static %} {% block cssfiles %} {% endblock cssfiles %} {% block searchform %}
-    <form
-      class="form-inline my-2 my-lg-0 ml-5"
-      action="{% url 'search_users' %}"
-      method="get"
-    >
-      <input name="q" type="text" placeholder="Search users.." />
-      <button class="btn btn-success my-2 my-sm-0 ml-4" type="submit">
-        Search
-      </button>
-    </form>
-    {% endblock searchform %} {% block content %}
+{% extends "feed/layout.html" %} {% load static %} {% block cssfiles %} {% endblock cssfiles %}
+
+{% block content %}
     <div class="container">
+
+      <br></br>
       <br></br>
       <div class="row">
 
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-8">
           {% if friends %}
           <div class="card card-signin my-5">
             <div class="card-body">
@@ -60,12 +53,12 @@
                 alt=""
             /></a>
             <div class="card-body">
-              <h5 class="card-title text-center">{{ request.user }}</h5>
+              <h5 class="card-title text-center text-capitalize">{{ request.user }}</h5>
               <h6 class="text-center">
                 {{ request.user.profile.friends.count }}
                 <p class="text-muted">Friends</p>
               </h6>
-              <p class="card-text text-center">{{ request.user.profile.bio }}</p>
+              <p class="card-text text-center text-capitalize">{{ request.user.profile.bio }}</p>
             </div>
           </div>
         </div>

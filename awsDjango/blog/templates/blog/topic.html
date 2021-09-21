@@ -43,12 +43,12 @@
           <p><a class="text-dark"  href="{% url 'blog:edit_entry' entry.id %}"> Edit Entry </a>-        -<a class="text-dark"  href="{% url 'blog:delete_entry' entry.id %}">  Delete Entry</a>     
 
      
-      </div>
-    </div>
+   
   {% empty %}
     <li>There are no entries for this topic yet.</li>
   {% endfor %}
-  </ul>
+     </div>
+    </div></ul>
   
 
 

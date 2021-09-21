@@ -2,12 +2,8 @@
 {% load static %}
 {% block cssfiles %}
 {% endblock cssfiles %}
-{% block searchform %}
-<form class="form-inline my-2 my-lg-0 ml-5" action="{% url 'search_posts' %}" method="get">
-  <input name="p" type="text" placeholder="Search posts..">
-  <button class="btn btn-success my-2 my-sm-0 ml-4" type="submit">Search</button>
-</form>
-{% endblock searchform %}
+
+
 {% block content %}
  	<div class="container">
      <br></br>
@@ -22,7 +18,7 @@
 	          	<br><br>
 	            <p class="card-text text-dark">{{ post.description }}</p>
 	          </div>
-	          <a href="{% url 'post-detail' post.id %}"><img class="card-img-top" src="{{ post.pic.url }}" alt=""></a>
+	          <a href="{% url 'post-detail' post.id %}"><img class="card-img-top" src="{{ post.cover_Pic.url }}" alt=""></a>
 	          {% if post.tags %}
 	          <br><p class="text-danger ml-3"><b>Tags: <i>{{ post.tags }}</i></b></p>
 	          {% endif %}

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'crispy_forms',
     'notifications',
+    'tinymce',
+    'emoji_picker',
 
 
     'django.contrib.admin',
@@ -48,6 +51,88 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+STATIC_URL = '/static/'
+
+
+TINYMCE_JS_URL = 'http://debug.example.org/tiny_mce/tiny_mce_src.js'
+TINYMCE_DEFAULT_CONFIG = {
+
+   'height': 360,
+
+   'width': 1000,
+
+   'cleanup_on_startup': True,
+
+   'custom_undo_redo_levels': 20,
+
+   'selector': 'textarea',
+
+   'theme': 'modern',
+
+   'plugins': '''
+
+   textcolor save link image media preview codesample contextmenu
+
+   table code lists fullscreen insertdatetime nonbreaking
+
+   contextmenu directionality searchreplace wordcount visualblocks
+
+   visualchars code fullscreen autolink lists charmap print hr
+
+   anchor pagebreak
+
+   ''',
+
+
+   'toolbar1': '''
+
+   fullscreen preview bold italic underline | fontselect,
+
+   fontsizeselect | forecolor backcolor | alignleft alignright |
+
+   aligncenter alignjustify | indent outdent | bullist numlist table |
+
+   | link image media | codesample |
+
+  
+
+   ''',
+
+   'toolbar2': '''
+
+   visualblocks visualchars |
+
+   charmap hr pagebreak nonbreaking anchor | code |
+
+   ''',
+
+   'contextmenu': 'formats | link image',
+
+   'menubar': True,
+
+   'statusbar': True,
+
+   }
+
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = True
+TINYMCE_EXTRA_MEDIA = {
+    'css': {
+        'all': [
+            ...
+        ],
+    },
+    'js': [
+        ...
+    ],
+}
+
+
+
+
+
+
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -56,6 +141,14 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('ccvCoding@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('aceg214125')
+
+EMOJI_IMG_TAG = getattr(settings, 'EMOJI_IMG_TAG', (
+    u'<img src="{0}" alt="{1}" title="{2}" class="emoji">'
+))
+
+EMOJI_ALT_AS_UNICODE = getattr(settings, 'EMOJI_ALT_AS_UNICODE', True)
+EMOJI_REPLACE_HTML_ENTITIES = getattr(settings, 'EMOJI_REPLACE_HTML_ENTITIES',
+                                      True)
 
 
 MIDDLEWARE = [
@@ -124,7 +217,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'EST'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -137,7 +230,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

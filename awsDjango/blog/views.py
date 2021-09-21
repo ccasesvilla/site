@@ -36,9 +36,24 @@ def topic(request, topic_id):
 @login_required
 def topics(request):
     """Show all topics."""
-    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    topics = Topic.objects.filter(owner=request.user).order_by('-date_added')
     context = {'topics': topics}
     return render(request, 'blog/topics.html', context)
+
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class UserBlogListView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'blog/user_blog.html'
+    context_object_name = 'blogs'
+    paginate_by = 10
+
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Post.objects.filter(author=user).order_by('-created_on')
+
 
 
 
@@ -53,6 +68,7 @@ def new_topic(request):
         form = TopicForm(data=request.POST)
         if form.is_valid():
             new_topic = form.save(commit=False)
+            new_topic.text = new_topic.text[3:-4]
             new_topic.owner = request.user
             new_topic.save()
             return redirect('blog:topics')
@@ -76,6 +92,8 @@ def new_entry(request, topic_id):
         if form.is_valid():
             new_entry = form.save(commit=False)
             new_entry.topic = topic
+            new_entry.text = new_entry.text[3:-4]
+
             new_entry.save()
             return redirect('blog:topic', topic_id=topic_id)
     # Display a blank or invalid form.
@@ -167,16 +185,16 @@ def PostList(request):
 def Blog_List1(request):
     queryset = Post.objects.filter(status=1).order_by("-created_on")
 
-    paginator = Paginator(queryset, 5)
-    for page in queryset:
-        photos = PostImage.objects.filter(post=page)
+    paginator = Paginator(queryset, 10)
+    # for page in queryset:
+    #     photos = PostImage.objects.filter(post=page)
         #return render(request, 'blog/blog_list.html', {'photos': photos})
 
 
     
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        return render(request, 'blog/blog_list.html', {'page_obj': page_obj})
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'blog/blog_list.html', {'page_obj': page_obj})
 
 
 def postimage_list(request, slug):
@@ -243,7 +261,9 @@ def delete_notifications (request, slug):
 def blog_detail(request, slug):
     template_name = "blog/blog_detail.html"
     post = get_object_or_404(Post, slug=slug)
-    photos = Post.objects.filter(title=post.slug)
+    #post.content = post.content[3:-4]
+    print(post.content)
+    photos = PostImage.objects.filter(post=post)
     comments = post.comments.filter(active=True).order_by("-created_on")
     new_comment = None
     # Comment posted
@@ -256,11 +276,12 @@ def blog_detail(request, slug):
             # Assign the current post to the comment
             new_comment.user = request.user
             new_comment.post = post
+            new_comment.body = new_comment.body[3:-4]
             # Save the comment to the database
             new_comment.save()
             sender = User.objects.get(username=request.user)
             notify.send(sender, recipient=new_comment.post.author, target=new_comment, verb=new_comment.post.title , description=new_comment.post.slug)
-            return redirect ('/blog_list' )
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             
             
             
@@ -282,14 +303,15 @@ def blog_detail(request, slug):
 
 
 
+from PIL import Image
+  
 
 
 import datetime
-
+from django.core.files.uploadhandler import InMemoryUploadedFile
 
 def new_blog(request):
 
-    
     #ImageFormSet = modelformset_factory(PostImage,
                                        # form=PostImageForm, extra=3)
 
@@ -301,24 +323,29 @@ def new_blog(request):
         if postForm.is_valid():
             post_form = postForm.save(commit=False)
             post_form.author = request.user
-            post_form.save()
             post_form.created_on = datetime.datetime.now()
-    
+            
+            post_form.content = post_form.content[3:-4]
+            print(post_form.content)
+            post_form.save()
+
             #for form in formset.cleaned_data:
                 #this helps to not crash if the user   
                 #do not upload all the photos
             for f in files:
-                photo = PostImage.objects.create(post=post_form.id, images=f)
+                #f = InMemoryUploadedFile(f)
+                photo = PostImage.objects.create(post=post_form, images=f)
                 photo.save()
             # use django messages framework
             messages.success(request,
                              "Yeeew, check it out on the home page!")
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/blog_list")
         else:
             print(postForm.errors)
     else:
         postForm = PostForm()
-        #formset = ImageFormSet(queryset=PostImage.objects.none())
+      
+
     return render(request, 'blog/new_blog.html',
                   {'postForm': postForm})
 

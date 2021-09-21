@@ -1,38 +1,115 @@
-<div class="alert alert-block alert-{{ notice.level }}">
-  <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
-    <i class="icon-close"></i>
-  </a>
-  
-  <h4>
-    <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
-    <p class="text-capitalize">From : {{ notice.target.username }}{{notice.target.user}} - On : {{ notice.target.post.description}}{{ notice.target.post.title}}</p>
-    {{ notice.action }} 
-    
 
-    {% if notice.target %}
-      Comment : {{ notice.target.body }}{{ notice.target.comment }}
+
+
+
+{%  if notice.active %}
+WHAT
+{% endif %}
+
+
+{% if notice.unread %}
+
+
+<div class="card card-signin my-5">
+  <div class="card-body">
+    <a href="{{ notice.actor.profile.get_absolute_url }}"><img src="{{ notice.actor.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+    <a class="text-dark" href="{{ notice.actor.profile.get_absolute_url }}"><b>From : {{ notice.actor }}</b></a>
+    <br><small class="text-muted">Posted  {{ notice.timesince }} ago</small>
+<p></p>
+      <p class="card-text text-dark text-capitalize"><u>on</u> : {{ notice.verb }} </p>
+    <p class="card-text text-dark"><u>Comment</u> : {{ notice.target.body }}  {{ notice.target.comment }}</p>
+  </div>
+ 
+  <div class="card-footer">
+ 
+
+    {% if notice.target.post.slug %}
+
+    <a href="{% url 'blog:blog_detail' notice.target.post.slug %}" class="btn btn-outline-primary">Go to Blog &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
+
+  
     {% endif %}
-  </h4>
+    {% if notice.target.post.description %}
+
+    <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
 
 
-  <p>{{ notice.timesince }} ago</p>
 
-  {% if notice.target.user %}
-  <a href="{% url 'blog:blog_detail' notice.description %}" class="btn btn-primary">Go to Post &rarr;</a>
-  {% endif %}
-  {% if notice.target.username %}
-  <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-primary">Go to Post &rarr;</a>
-  {% endif %}
+{% endif %} 
+ </div>
+</div>
 
-  <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-primary">Mark as Read</a>
-  <a style="border-width: 2px;" class="btn btn-primary active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% else %}
+
+
+<div class="card card-signin my-5">
+  <div class="card-body">
+    <a href="{{ notice.actor.profile.get_absolute_url }}"><img src="{{ notice.actor.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+    <a class="text-dark" href="{{ notice.actor.profile.get_absolute_url }}"><b>From : {{ notice.actor }}</b></a>
+    <br><small class="text-muted">Posted  {{ notice.timesince }} ago</small>
+<p></p>
+<p class="card-text text-dark text-capitalize"><u>on</u> : {{ notice.verb }} </p>
+<p class="card-text text-dark"><u>Comment</u> : {{ notice.target.body }}  {{ notice.target.comment }}</p>
+  </div>
+ 
+  <div class="card-footer">
+ 
+
+    {% if notice.target.post.slug %}
+
+    <a href="{% url 'blog:blog_detail' notice.target.post.slug %}" class="btn btn-outline-primary">Go to Blog &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
 
   
-  <div class="notice-actions">
-    {% for action in notice.data.actions %}
-      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
-    {% endfor %}
+    {% endif %}
+    {% if notice.target.post.description %}
+
+    <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
+
+  
+{% endif %} 
   </div>
 </div>
 
-<br></br>
+
+
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+

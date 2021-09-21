@@ -10,7 +10,7 @@ from django.urls import path, include
 from django.conf.urls import url
 
 
-
+from .views import UserBlogListView
 
 from django.conf.urls import url
 
@@ -34,7 +34,10 @@ urlpatterns = [
     path('edit_entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),
     path('delete_entry/<int:entry_id>', views.delete_entry, name='delete_entry'),
     path('blog_detail/', views.blog_detail, name='blog_detail'), 
-    path('<slug:slug>/', views.blog_detail, name="blog_detail"),        
+    path('<slug:slug>/', views.blog_detail, name="blog_detail"),
+	path('user_blogs/<str:username>', UserBlogListView.as_view(), name='user-blogs'),    
+    path('tinymce/', include('tinymce.urls')),
+
     ] 
     # id we are in development mode
 if settings.DEBUG:
