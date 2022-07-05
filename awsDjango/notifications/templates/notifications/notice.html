@@ -1,0 +1,115 @@
+
+
+
+ 
+{%  if notice.active %}
+WHAT
+{% endif %}
+
+
+{% if notice.unread %}
+
+
+<div class="card card-signin my-5">
+  <div class="card-body">
+    <a href="{{ notice.actor.profile.get_absolute_url }}"><img src="{{ notice.actor.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+    <a class="text-dark" href="{{ notice.actor.profile.get_absolute_url }}"><b>From : {{ notice.actor }}</b></a>
+    <br><small class="text-muted">Posted  {{ notice.timesince }} ago</small>
+<p></p>
+      <p class="card-text text-dark text-capitalize"><u>on</u> : {{ notice.verb }} </p>
+    <p class="card-text text-dark"><u>Comment</u> : {{ notice.target.body }}  {{ notice.target.comment }}</p>
+  </div>
+ 
+  <div class="card-footer">
+ 
+
+    {% if notice.target.post.slug %}
+
+    <a href="{% url 'blog:blog_detail' notice.target.post.slug %}" class="btn btn-outline-primary">Go to Blog &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
+
+  
+    {% endif %}
+    {% if notice.target.post.description %}
+
+    <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
+
+
+{% endif %} 
+ </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% else %}
+
+
+<div class="card card-signin my-5">
+  <div class="card-body">
+    <a href="{{ notice.actor.profile.get_absolute_url }}"><img src="{{ notice.actor.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+    <a class="text-dark" href="{{ notice.actor.profile.get_absolute_url }}"><b>From : {{ notice.actor }}</b></a>
+    <br><small class="text-muted">Posted  {{ notice.timesince }} ago</small>
+<p></p>
+<p class="card-text text-dark text-capitalize"><u>on</u> : {{ notice.verb }} </p>
+<p class="card-text text-dark"><u>Comment</u> : {{ notice.target.body }}  {{ notice.target.comment }}</p>
+  </div>
+ 
+  <div class="card-footer">
+ 
+
+    {% if notice.target.post.slug %}
+
+    <a href="{% url 'blog:blog_detail' notice.target.post.slug %}" class="btn btn-outline-primary">Go to Blog &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
+
+  
+    {% endif %}
+    {% if notice.target.post.description %}
+
+    <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Notice</a>
+
+
+  
+{% endif %} 
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+

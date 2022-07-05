@@ -1,0 +1,55 @@
+{% extends "feed/layout.html" %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+{% static 'emoji-picker-panel.css' %}
+<head>
+    <meta charset="utf-8mb4">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+    <script src="https://cdn.tiny.cloud/1/7op7nw7ux5rjy9gv3rjft1amkh0pv6rg3qsbh1whmqsjd9tj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    menubar: false,
+    plugins: 'emoticons advlist link image lists',
+    toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+    emoticons_database: 'emojis'
+  });
+</script>
+</head>
+
+<br>
+<div class="container">
+ 
+  <br></br>
+  <br></br>
+ <div class="jumbotron">  
+  <p><a class="text-dark" href="{% url 'blog:topic' topic.id %}">{{ topic }}</a></p>
+  
+  <p>Add a New Entry : </p>
+  <form action="{% url 'blog:new_entry' topic.id %}" method='post'>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button name="submit">Add Entry</button>
+    <br>
+    <br>
+  </form>
+</div>
+</div>
+<br></br>
+<div class="d-none d-md-block">
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+
+</div>
+{% endblock %}

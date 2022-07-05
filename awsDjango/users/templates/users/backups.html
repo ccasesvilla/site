@@ -1,0 +1,938 @@
+profile.html
+
+{% extends "feed/layout.html" %}
+ {% load static %} {% block searchform %}
+
+<form
+  class="form-inline my-2 my-lg-0 ml-5"
+  action="{% url 'search_users' %}"
+  method="get"
+>
+  <input name="q" type="text" placeholder="Search users.." />
+  <button class="btn btn-success my-2 my-sm-0 ml-4" type="submit">
+    Search
+  </button>
+</form>
+{% endblock searchform %} {% block content %}
+<br /><br />
+<div class="main-content">
+  <div class="container mt-7">
+    <div class="row">
+      <div class="col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
+        <div class="card card-profile shadow">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="{{ u.profile.image.url }}">
+                  <img
+                    src="{{ u.profile.image.url }}"
+                    class="rounded-circle"
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+              </div>
+            </div>
+            <div class="col-lg-3 order-lg-3">
+              <p>Name : {{ u.profile.first_name }} {{ u.profile.last_name }}</p>
+              <p>About Me : {{ u.profile.bio }}</p>
+            </div>
+          </div>
+          <div
+            class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"
+          ></div>
+          <div class="card-body pt-0 pt-md-4">
+            <div class="row">
+              <div class="col">
+                <div
+                  class="card-profile-stats d-flex justify-content-center mt-md-5"
+                >
+                  <div>
+                    <span class="heading">{{ u.profile.friends.count }}</span>
+                    {% if request.user == u %}
+                    <span class="description"
+                      ><a href="{% url 'friend_list' %}">Friends</a></span
+                    >
+                    {% else %}
+                    <span class="description">Friends</span>
+                    {% endif %}
+                    <span class="heading">{{ post_count }}</span>
+                    <span class="description"
+                      ><a href="{% url 'user-posts' u.username %}"
+                        >Posts</a
+                      ></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <h3>{{ u }}</h3>
+              <p>Interests : {{ u.profile.interests }}</p>
+              <p>Description : {{ u.profile.description }}</p>
+              <hr class="my-2" />
+              {% if request.user == u %}
+              <a class="btn btn-info" href="{% url 'edit_profile' %}"
+                >Edit Profile</a
+              >
+              {% else %} {% if button_status == 'not_friend' %}
+              <small
+                ><a
+                  class="btn btn-primary"
+                  href="/users/friend-request/send/{{ u.id }}"
+                  >Add Friend</a
+                ></small
+              >
+              {% elif button_status == 'friend_request_sent' %}
+              <small
+                ><a
+                  class="btn btn-warning"
+                  href="/users/friend-request/cancel/{{ u.id }}"
+                  >Cancel Request</a
+                ></small
+              >
+              {% elif button_status == 'friend_request_received' %}
+              <small
+                ><a
+                  class="btn btn-success mr-2"
+                  href="/users/friend-request/accept/{{ u.id }}"
+                  >Accept Request</a
+                ></small
+              >
+              <small
+                ><a
+                  class="btn btn-danger"
+                  href="/users/friend-request/delete/{{ u.id }}"
+                  >Reject Request</a
+                ></small
+              >
+              {% else %}
+              <small
+                ><a
+                  class="btn btn-danger"
+                  href="/users/friend/delete/{{ u.id }}"
+                  >UnFriend</a
+                ></small
+              >
+              {% endif %} {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    {% if request.user == u %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h2>Friend Requests Sent ({{ sent_friend_requests.count }})</h2>
+            <hr class="my-2" />
+            {% if not sent_friend_requests %}
+            <h5><i>No sent requests!</i></h5>
+            {% else %} {% for s_request in sent_friend_requests %}
+            <a href="{{ s_request.to_user.profile.get_absolute_url }}"
+              ><img
+                src="{{ s_request.to_user.profile.image.url }}"
+                class="rounded mr-2"
+                width="40"
+                height="40"
+                alt=""
+            /></a>
+            <a href="{{ s_request.to_user.profile.get_absolute_url }}"
+              ><b>{{ s_request.to_user.username }}</b></a
+            >
+            <small class="float-right">
+              <a
+                class="btn btn-warning mr-2"
+                href="{% url 'cancel_friend_request' s_request.to_user.id %}"
+                >Cancel</a
+              >
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h2>Friend Requests Recieved ({{ rec_friend_requests.count }})</h2>
+            <hr class="my-2" />
+            {% if not rec_friend_requests %}
+            <h5><i>No recieved requests!</i></h5>
+            {% else %} {% for r_request in rec_friend_requests %}
+            <a href="{{ r_request.from_user.profile.get_absolute_url }}"
+              ><img
+                src="{{ r_request.from_user.profile.image.url }}"
+                class="rounded mr-2"
+                width="40"
+                height="40"
+                alt=""
+            /></a>
+            <a
+              class="mr-2 align-middle"
+              href="{{ r_request.from_user.profile.get_absolute_url }}"
+              ><b>{{ r_request.from_user.username }}</b>
+            </a>
+            <small class="float-right">
+              <a
+                class="btn btn-success mr-2"
+                href="/users/friend-request/accept/{{ r_request.from_user.id }}"
+                >Accept</a
+              >
+              <a
+                class="btn btn-danger"
+                href="/users/friend-request/delete/{{ r_request.from_user.id }}"
+                >Reject</a
+              >
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock content %}
+
+
+
+
+edited profile
+
+{% extends "feed/layout.html" %}
+ {% load static %} {% block searchform %}
+
+<form
+  class="form-inline my-2 my-lg-0 ml-5"
+  action="{% url 'search_users' %}"
+  method="get"
+>
+  <input name="q" type="text" placeholder="Search users.." />
+  <button class="btn btn-success my-2 my-sm-0 ml-4" type="submit">
+    Search
+  </button>
+</form>
+{% endblock searchform %} {% block content %}
+<br /><br />
+
+
+<div class="container">
+  <div class="col-2">
+  </div>
+  <div class="d-flex-inline">   
+ 
+
+      <fieldset class="border bg-white">
+        <p style="text-align:center; font-size: 30px"><u>Profile Info</u></p>
+       
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-4">
+            <img class="rounded-circle account-img img-fluid" src="{{ u.profile.image.url }}">
+            <br></br>
+          </div>
+          <br>
+ 
+       <div class="col-sm-4">
+
+
+    		<p class="text-muted mb-0" style="font-size: 12px">Username :</p>
+    		<p>{{ u.username }}</p>
+    		<p class="text-muted mb-0" style="font-size: 12px">First Name :</p>
+	  		<p>{{ u.profile.first_name }}</p>
+    		<p class="text-muted mb-0" style="font-size: 12px">Last Name :</p>
+	  		<p>{{ u.profile.last_name }}</p>	  		
+	  		<p class="text-muted mb-0" style="font-size: 12px">Email :</p>
+	  		<p style="text-align:center;">{{ u.email }} </p>
+
+        </div>
+
+          <div class="col-sm-4">
+
+	  		<p class="text-muted mb-0" style="font-size: 12px">About Me :</p>
+	  		<p>{{ u.profile.bio }} </p>
+	  		<br>
+	  		<p class="text-muted mb-0" style="font-size: 12px">Description :</p>
+	  		<p>{{ u.profile.description }} </p>
+	  		<br>
+	  		<p class="text-muted mb-0" style="font-size: 12px">Interests :</p>
+	  		<p>{{ u.profile.interests }} </p>
+        </fieldset>
+        </div>
+      <p></p>
+
+          </div>
+          </div>
+<div class="container">
+<div class="row">
+     <div class="col-4">
+    </div>
+     <div class="col-8">
+    
+            <a href="{% url 'edit_profile' %}" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true"> Update Profle </a>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+              Launch demo modal
+            </button>
+            <a href="/password_reset" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true">Change Password</a>  
+
+            <a href="/base" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true"> Comment List </a>
+
+
+	  		</div>
+	  		</div>
+	  		</div>
+	  		
+
+    <p>      </p>
+    <p>      </p>       
+        
+        
+    </div>
+  
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <a href="{% url 'edit_profile' %}" style="border-width: 2px; margin: 10px;" class="btn btn-primary active" role="button" aria-pressed="true"> Update Profle </a>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="main-content">
+  <div class="container mt-7">
+    <div class="row">
+      <div class="col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
+        <div class="card card-profile shadow">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="{{ u.profile.image.url }}">
+                  <img
+                    src="{{ u.profile.image.url }}"
+                    class="rounded-circle"
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+              </div>
+            </div>
+            <div class="col-lg-3 order-lg-3">
+              <p>Name : {{ u.profile.first_name }} {{ u.profile.last_name }}</p>
+              <p>About Me : {{ u.profile.bio }}</p>
+            </div>
+          </div>
+          <div
+            class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"
+          ></div>
+          <div class="card-body pt-0 pt-md-4">
+            <div class="row">
+              <div class="col">
+                <div
+                  class="card-profile-stats d-flex justify-content-center mt-md-5"
+                >
+                  <div>
+                    <span class="heading">{{ u.profile.friends.count }}</span>
+                    {% if request.user == u %}
+                    <span class="description"
+                      ><a href="{% url 'friend_list' %}">Friends</a></span
+                    >
+                    {% else %}
+                    <span class="description">Friends</span>
+                    {% endif %}
+                    <span class="heading">{{ post_count }}</span>
+                    <span class="description"
+                      ><a href="{% url 'user-posts' u.username %}"
+                        >Posts</a
+                      ></span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <h3>{{ u }}</h3>
+              <p>Interests : {{ u.profile.interests }}</p>
+              <p>Description : {{ u.profile.description }}</p>
+              <hr class="my-2" />
+              {% if request.user == u %}
+              <a class="btn btn-info" href="{% url 'edit_profile' %}"
+                >Edit Profile</a
+              >
+              {% else %} {% if button_status == 'not_friend' %}
+              <small
+                ><a
+                  class="btn btn-primary"
+                  href="/users/friend-request/send/{{ u.id }}"
+                  >Add Friend</a
+                ></small
+              >
+              {% elif button_status == 'friend_request_sent' %}
+              <small
+                ><a
+                  class="btn btn-warning"
+                  href="/users/friend-request/cancel/{{ u.id }}"
+                  >Cancel Request</a
+                ></small
+              >
+              {% elif button_status == 'friend_request_received' %}
+              <small
+                ><a
+                  class="btn btn-success mr-2"
+                  href="/users/friend-request/accept/{{ u.id }}"
+                  >Accept Request</a
+                ></small
+              >
+              <small
+                ><a
+                  class="btn btn-danger"
+                  href="/users/friend-request/delete/{{ u.id }}"
+                  >Reject Request</a
+                ></small
+              >
+              {% else %}
+              <small
+                ><a
+                  class="btn btn-danger"
+                  href="/users/friend/delete/{{ u.id }}"
+                  >UnFriend</a
+                ></small
+              >
+              {% endif %} {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    {% if request.user == u %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h2>Friend Requests Sent ({{ sent_friend_requests.count }})</h2>
+            <hr class="my-2" />
+            {% if not sent_friend_requests %}
+            <h5><i>No sent requests!</i></h5>
+            {% else %} {% for s_request in sent_friend_requests %}
+            <a href="{{ s_request.to_user.profile.get_absolute_url }}"
+              ><img
+                src="{{ s_request.to_user.profile.image.url }}"
+                class="rounded mr-2"
+                width="40"
+                height="40"
+                alt=""
+            /></a>
+            <a href="{{ s_request.to_user.profile.get_absolute_url }}"
+              ><b>{{ s_request.to_user.username }}</b></a
+            >
+            <small class="float-right">
+              <a
+                class="btn btn-warning mr-2"
+                href="{% url 'cancel_friend_request' s_request.to_user.id %}"
+                >Cancel</a
+              >
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h2>Friend Requests Recieved ({{ rec_friend_requests.count }})</h2>
+            <hr class="my-2" />
+            {% if not rec_friend_requests %}
+            <h5><i>No recieved requests!</i></h5>
+            {% else %} {% for r_request in rec_friend_requests %}
+            <a href="{{ r_request.from_user.profile.get_absolute_url }}"
+              ><img
+                src="{{ r_request.from_user.profile.image.url }}"
+                class="rounded mr-2"
+                width="40"
+                height="40"
+                alt=""
+            /></a>
+            <a
+              class="mr-2 align-middle"
+              href="{{ r_request.from_user.profile.get_absolute_url }}"
+              ><b>{{ r_request.from_user.username }}</b>
+            </a>
+            <small class="float-right">
+              <a
+                class="btn btn-success mr-2"
+                href="/users/friend-request/accept/{{ r_request.from_user.id }}"
+                >Accept</a
+              >
+              <a
+                class="btn btn-danger"
+                href="/users/friend-request/delete/{{ r_request.from_user.id }}"
+                >Reject</a
+              >
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock content %}
+
+
+
+
+create Post
+<form class="form-signin" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <fieldset class="form-group">
+    <br />
+    {{ form|crispy }}
+  </fieldset>
+  <div class="form-group">
+    <button
+      class="btn btn-lg btn-primary btn-block text-uppercase"
+      type="submit"
+    >
+      Post</button
+    ><br />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+notice.html back up up
+
+
+
+<div class="alert alert-block alert-{{ notice.level }}">
+  <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
+    <i class="icon-close"></i>
+  </a>
+  
+  <h4>
+    <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
+    <p class="text-capitalize">From : {{ notice.target.username }}{{notice.target.user}} - On : {{ notice.target.post.description}}{{ notice.target.post.title}}</p>
+    {{ notice.action }} 
+    
+
+    {% if notice.target %}
+      Comment : {{ notice.target.body }}{{ notice.target }}
+    {% endif %}
+  </h4>
+
+
+  <p>{{ notice.timesince }} ago</p>
+
+  {% if notice.target.user %}
+  <a href="{% url 'blog:blog_detail' notice.description %}" class="btn btn-primary">Go to Post &rarr;</a>
+  {% endif %}
+  {% if notice.target.username %}
+  <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-primary">Go to Post &rarr;</a>
+  {% endif %}
+
+  <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-primary">Mark as Read</a>
+  <a style="border-width: 2px;" class="btn btn-primary active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+  
+  <div class="notice-actions">
+    {% for action in notice.data.actions %}
+      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+<br></br>
+
+
+
+
+
+
+
+<div class="alert alert-block alert-{{ notice.level }}">
+  <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
+    <i class="icon-close"></i>
+  </a>
+  
+  <h4>
+    <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
+    <p class="text-capitalize">From : {{ notice.actor}} - on Blog : {{ notice.verb }}</p>
+    {{ notice.action }} 
+
+  
+      Comment : {{ notice.target.body }}
+   
+  </h4>
+  
+  <p>{{ notice.timesince }} ago</p>
+
+  <a href="{% url 'blog:blog_detail' notice.description %}" class="btn btn-outline-info">Go to Post &rarr;</a>
+  <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-info">Mark as Read</a>
+  <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+
+  
+  <div class="notice-actions">
+    {% for action in notice.data.actions %}
+      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+<br></br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% if notice.unread %}
+FUCKYOU
+
+<div class="card card-signin my-5">
+  <div class="card-body">
+    <a href="{{ notice.actor.profile.get_absolute_url }}"><img src="{{ notice.actor.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+    <a class="text-dark" href="{{ notice.actor.profile.get_absolute_url }}"><b>From : {{ notice.actor }}</b></a>
+    <br><small class="text-muted">Posted  {{ notice.timesince }} ago</small>
+<p></p>
+      <p class="card-text text-dark text-capitalize">on : <u>{{ notice.verb }} :</u></p>
+    <p class="card-text text-dark">Comment {{ notice.target.body }}  {{ notice.target.comment }}</p>
+  </div>
+ 
+  <div class="card-footer">
+ 
+
+    {% if notice.target.post.slug %}
+
+    <a href="{% url 'blog:blog_detail' notice.target.post.slug %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+
+FUCK  
+    {% endif %}
+    {% if notice.target.post.description %}
+
+    <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+
+CUNT  
+{% endif %} 
+ </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% else %}
+SHITBAG
+
+<div class="card card-signin my-5">
+  <div class="card-body">
+    <a href="{{ notice.actor.profile.get_absolute_url }}"><img src="{{ notice.actor.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+    <a class="text-dark" href="{{ notice.actor.profile.get_absolute_url }}"><b>From : {{ notice.actor }}</b></a>
+    <br><small class="text-muted">Posted  {{ notice.timesince }} ago</small>
+<p></p>
+      <p class="card-text text-dark text-capitalize">on : <u>{{ notice.verb }} :</u></p>
+    <p class="card-text text-dark">Comment {{ notice.target.body }}  {{ notice.target.comment }}</p>
+  </div>
+ 
+  <div class="card-footer">
+ 
+
+    {% if notice.target.post.slug %}
+
+    <a href="{% url 'blog:blog_detail' notice.target.post.slug %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-outline-primary">Mark as Read</a>
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+
+FUCK  
+    {% endif %}
+    {% if notice.target.post.description %}
+
+    <a href="{% url 'post-detail' notice.target.post.id %}" class="btn btn-outline-primary">Go to Post &rarr;</a>
+
+    <a style="border-width: 2px;" class="btn btn-outline-danger active float-right" role="button" href="{% url 'notifications:delete' notice.slug %}">Delete Comment</a>
+
+
+CUNT  
+{% endif %} 
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endif %}
+
+
+
+
+
+blog_detail back up
+
+<div class="container">
+
+  {% for comment in comments %}
+  {{comment.user}}<p></p>
+  {{comment.created_on}}<p></p>
+  {{comment.body}}<p></p>
+  reply{{comment.reply}}<p></p>
+  slug{{comment.Slug}}<p></p>
+  id{{comment.id}}<p></p>
+
+      {% for reply in replies %}
+      {% if reply.reply == comment.Slug %}
+          {{reply.user}}<p></p>
+          {{reply.created_on}}<p></p>
+          {{reply.body}}<p></p>
+          reply{{reply.reply}}<p></p>
+          slug{{reply.Slug}}<p></p>
+          id{{reply.id}}<p></p>
+
+          {% endif %}
+      {% endfor %}
+      <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample{{comment.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+          Reply </a>
+      <div class="collapse" id="collapseExample{{comment.id}}">
+          <div>
+              <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                  {{ comment_form.user }}
+                  {{comment_form}}
+                </div>
+                <div class="form-group mt-md-2">
+                  {{comment_form.comment}}
+                </div>
+                  <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <button class="btn btn-primary mt-md-1" type="submit" value="Reply">Reply</button>
+              </form>
+          </div>
+      </div>
+  <hr>
+{% endfor %}
+
+
+
+
+
+
+
+
+<div class="row">
+  <p></p>
+  <div class="col card mb-4  mt-3 " style="z-index:+50">
+    <div class="col-12 card-body">
+      {% with comments.count as total_comments %}
+        <p  style="text-align:center; font-size: 25px">{{ total_comments }} Comment(s)</p>
+          
+            {% endwith %}
+          
+         
+          <div class="card card-signin my-5">
+             {% for comment in comments %}
+            <div class="card-body">
+              <a href="{{ comment.user.profile.get_absolute_url }}"><img src="{{ comment.user.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+              <a class="text-dark" href="{{ comment.user.profile.get_absolute_url }}"><b>From : {{ comment.user }}</b></a>
+              <br><small class="text-muted">Posted  {{ comment.created_on }}</small>
+                <p></p>
+              3333{{ comment.id}}
+              (slug){{comment.Slug}}<p></p>
+              (reply){{comment.reply}}<p></p>
+              (parent){{comment.parent}}<p></p>
+             
+              <p class="card-text text-dark"><u>Comment</u> : {{ comment.body }}  {{ notice.target.comment }}</p>
+            </div>
+  
+            <div class="card-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                Comment
+              </button>
+              <a class="btn btn-outline-danger mr-1 float-right" href="{% url 'blog:comment-delete' comment.id %}">Delete</a>
+              
+              <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModal1Label" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModal1Label">Reply</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="card-body">
+                        <form action="." method="post">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                
+                      <!-- Hidden input for parent comment.id -->
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <input class="btn btn-primary" type="submit" value="Replay">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>            
+              </div>
+            </div>
+             
+            <div class="card card-signin my-5" style="z-index:+4">
+              <div class="card-body">
+            
+              
+                
+                {% for replay in replies %}
+                {% if comment.Slug == replay.reply %}
+                <p class="info">{{ replay.user }} | {{ replay.created_on }}</p>
+               4444 <li>{{ replay.body }}</li>
+            
+                slug-{{replay.Slug}}<p></p>
+                reply-{{ replay.reply}}<p></p>
+            
+                <p></p>
+                <p></p>
+              
+              <div class="card-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                  Comment
+                </button>
+                <a class="btn btn-outline-danger mr-1 float-right" href="{% url 'blog:comment-delete' comment.id %}">Delete</a>
+            
+                </div>
+              </div>
+            </div>
+          </div>{% endif %}{% endfor %}
+         
+  
+  
+  
+  
+  
+  
+  
+  
+  
+          <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModal1Label" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModal1Label">Reply</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="card-body">
+                    <form action="." method="post">
+                      {% csrf_token %}
+                      {{ comment_form.as_p }}
+                
+                    <!-- Hidden input for parent comment.id -->
+                      <input type="hidden" name="parent_id" value="{{ replay.id }}">
+                      <input class="btn btn-primary" type="submit" value="Replay">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </form> 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         {% endfor %}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </div>

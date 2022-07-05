@@ -1,0 +1,143 @@
+{% extends "feed/layout.html" %}
+ {% load static %} 
+  {% block content %}
+<br></br>
+
+
+  <br></br>
+<div class="container">
+  <div class="row">
+    <div class="col-8">   
+      <div class="card">
+        <fieldset class="bg-white">
+          <p class="text-capitalize" style="text-align:center; font-size: 30px"><u>{{ u }}</u></p>
+          <p style="text-align:center; font-size: 12px" class="text-dark mb-0" style="font-size: 12px">About Me :</p><p class=" bg-light border-0 p-8 p-md-2 " style="text-align:center;">{{ u.profile.bio }}</p>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-4">
+              <a href="{{ u.profile.image.url }}">
+                <img
+                  src="{{ u.profile.image.url }}"
+                  class="rounded-circle"
+                  width="150px"
+                  height="170px"/>
+              </a>
+              <br></br>
+            <div class="d-block d-sm-none card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">                
+          </div>
+        </div>
+          <br>  
+        <div class="col-sm-6">
+          <object style="height: 390px; width: 640px"><param name="movie" value="https://www.youtube.com/watch?v=1crWolS6oX8"><param name="allowFullScreen" value="true"><param name="allowScriptAccess" value="always"><embed src="https://www.youtube.com/watch?v=1crWolS6oX8" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="640" height="390"></object>
+          <p class="text-muted mb-0" style="font-size: 12px">First Name :</p>
+          <p>{{ u.profile.first_name }}</p>
+          <p class="text-muted mb-0" style="font-size: 12px">Last Name :</p>
+          <p>{{ u.profile.last_name }}</p>	  		
+          <p class="text-muted mb-0" style="font-size: 12px">Email :</p>
+          <p style="text-align:center;">{{ u.email }} </p>
+        </div>
+        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"> 
+          <span class="heading">{{ u.profile.friends.count }}</span>
+          {% if request.user == u %}
+          <span class="description">
+            <a href="{% url 'friend_list' %}">Friends</a>
+          </span>
+            {% else %}
+          <span class="description">Friends</span>
+            {% endif %}
+          <span class="heading">{{ post_count }}</span>
+          <span class="description">
+            <a href="{% url 'user-posts' u.username %}">Posts</a>
+          </span>
+          <span class="heading">{{ blog_count }}</span>
+          <span class="description">
+            <a href="{% url 'blog:user-blogs' u.username %}">Blogs</a>
+          </span>
+        </div>
+        <div class="col-sm-4">	  		
+          <br>
+          <p class="text-muted mb-0" style="font-size: 12px">Description :</p>
+          <p>{{ u.profile.description }} </p>
+          <br>
+          <p class="text-muted mb-0" style="font-size: 12px">Interests :</p>
+          <p>{{ u.profile.interests }} </p>
+          </fieldset>
+        </div>          
+        <div class="card-footer d-flex-auto bg-light pt-8 p-8 p-md-2" style="overflow-y: scroll; margin: auto; justify-content:space-evenly;">           
+
+          {% if button_status == 'not_friend' %}
+            <small>
+              <a class="btn btn-primary float-center" href="/users/friend-request/send/{{ u.id }}">Add Friend</a>
+              </small>
+            {% elif button_status == 'friend_request_sent' %}
+            <small>
+              <a class="btn btn-warning float-center" href="/users/friend-request/cancel/{{ u.id }}">Cancel Request</a>
+            </small>
+            {% elif button_status == 'friend_request_received' %}
+            <small>
+              <a class="btn btn-success float-center mr-2" href="/users/friend-request/accept/{{ u.id }}">Accept Request</a>
+            </small>
+            <small>
+              <a class="btn btn-danger float-center" href="/users/friend-request/delete/{{ u.id }}">Reject Request</a>
+            </small>
+            {% else %}
+            <small>
+              <a class="btn btn-danger float-center" href="/users/friend/delete/{{ u.id }}">UnFriend</a>
+            </small>
+            {% endif %}
+            <a href="{% url 'edit_profile' %}" style="border-width: 1px;   justify-content:space-evenly;" class="btn btn-outline-primary" role="button" aria-pressed="true">Edit Profle</a>
+            <a href="/password_reset" style="justify-content:space-evenly;" class="btn btn-outline-primary" role="button" aria-pressed="true">New Psswrd</a>  
+            {% if request.user == u %}
+            <a href="/base" style="border-width: 1px;  justify-content:space-evenly;" class="btn btn-outline-primary" role="button" aria-pressed="true">Comments</a>
+            {% endif %}
+      
+
+        </div>
+          <p></p>
+      </div>
+        {% if request.user == u %}
+      <div class="col-4">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h2>Friend Requests Sent ({{ sent_friend_requests.count }})</h2>
+            <hr class="my-2" />
+              {% if not sent_friend_requests %}
+            <h5><i>No sent requests!</i></h5>
+              {% else %} {% for s_request in sent_friend_requests %}
+            <a href="{{ s_request.to_user.profile.get_absolute_url }}">
+              <img  src="{{ s_request.to_user.profile.image.url }}" width="40" height="40" alt=""/></a>
+            <a href="{{ s_request.to_user.profile.get_absolute_url }}"><b>{{ s_request.to_user.username }}</b></a>
+            <small class="float-right">
+            <a class="btn btn-warning mr-2"href="{% url 'cancel_friend_request' s_request.to_user.id %}">Cancel</a>
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>          
+        <div class="card card-signin my-5">
+           <div class="card-body">
+                <h2>Friend Requests Recieved ({{ rec_friend_requests.count }})</h2>
+                <hr class="my-2" />
+              {% if not rec_friend_requests %}
+                <h5><i>No recieved requests!</i></h5>
+              {% else %} {% for r_request in rec_friend_requests %}
+              <a href="{{ r_request.from_user.profile.get_absolute_url }}">
+                <img src="{{ r_request.from_user.profile.image.url }}" class="rounded mr-2" width="40" height="40" alt=""/></a>
+              <a class="mr-2 align-middle"  href="{{ r_request.from_user.profile.get_absolute_url }}" ><b>{{ r_request.from_user.username }}</b></a>
+                <small class="float-right">
+              <a class="btn btn-success mr-2" href="/users/friend-request/accept/{{ r_request.from_user.id }}">Accept</a>
+              <a class="btn btn-danger" href="/users/friend-request/delete/{{ r_request.from_user.id }}">Reject</a>
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <br>
+  <br>
+</div>
+
+{% endblock content %}

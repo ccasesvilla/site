@@ -1,0 +1,43 @@
+{% extends 'feed/layout.html' %}
+
+
+{% block content %}
+	
+<br>
+<br>
+<div class="card">
+  <div class="card-header">
+    <h4>{{ entry.topic }} -- {{ entry.topic.owner }}</h4>
+  </div>
+  <div class="card-body">
+    <p class="card-title">{{ entry.date_added }}</p>
+    <p class="card-text">
+    	<ul>
+
+	<li>{{ entry.text }}</li>
+	
+
+
+
+	</ul>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+
+
+    </p>
+  </div>
+</div>
+	<br>
+	<br>
+		<br>
+			<br>
+	<br>
+	
+
+	
+
+{% endblock %}

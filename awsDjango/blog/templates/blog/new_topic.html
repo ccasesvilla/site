@@ -1,0 +1,61 @@
+{% extends "feed/layout.html" %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+{% static 'emoji-picker-panel.css' %}
+<head>
+    <meta charset="utf-8mb4">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+    <script src="https://cdn.tiny.cloud/1/7op7nw7ux5rjy9gv3rjft1amkh0pv6rg3qsbh1whmqsjd9tj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    menubar: false,
+    plugins: 'emoticons advlist link image lists',
+    toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+    emoticons_database: 'emojis'
+  });
+</script>
+</head>
+
+<br></br>
+<br></br>
+
+<div class="container">
+<div clas="row">
+  <div class="col-4">
+  </div>
+  <div class="col-8">
+
+  <p>Add A New Topic : </p>
+  
+  <form action="{% url 'blog:new_topic' %}" method='post'>
+    {% csrf_token %}
+    <p>{{ form|crispy }}</p>
+    <button class="text-center" name='submit'>Add Topic</button>
+  </form>
+
+</div>
+</div>
+<br></br>
+<br></br>
+<br></br>
+<div class="d-none d-md-block">
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+</div>
+</div>
+
+  
+{% endblock content %}

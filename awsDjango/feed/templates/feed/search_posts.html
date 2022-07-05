@@ -1,0 +1,311 @@
+{% extends "feed/layout.html" %}
+{% load static %}
+{% block cssfiles %}
+{% endblock cssfiles %}
+
+
+{% block content %}
+
+
+
+
+<div class="container">
+	<br></br>
+	<br></br>
+	{% if lengths != 0 %}
+		<p style="text-align:center; font-size: 30px">{{ lengths }} <i>Search Result(s)</i></p>
+	{% else %}
+		<br>
+		<h2><i>No posts match the tag provided!</i></h2>
+	{% endif %}
+</div>
+
+
+
+
+<div class="container">
+	<div class="row">
+
+
+
+
+
+
+	<div class="col-md-8">		
+		<div class="card card-signin my-5">
+			<div class="card-body">
+				{% if users %}
+				{% for user_p in users %}
+				<a href="{{ user_p.slug.get_absolute_url }}">
+					<img
+					src="{{ user_p.image.url }}"
+					class="rounded mr-2"
+					width="40"
+					height="40"
+					alt=""/></a>
+				<a class="text-dark" href="{{ user_p.get_absolute_url }}"><b>{{ user_p }}</b></a>
+				<small>
+					<a class="btn btn-danger float-right"
+					href="{% url 'delete_friend' user_p.id %}"
+					>UnFriend</a>
+				</small>
+				  <br /><br />
+			    {% endfor %}
+			    {% else %}
+			    <h5><i>No new people to add now! Please come back later!</i></h5>
+			    {% endif %}
+			</div>
+		</div>		
+
+
+				
+		{% for post in entries %}
+		<div class="card card-signin my-5">
+			<div class="card-body">
+				<a href="{{ post.user_name.profile.get_absolute_url }}"><img src="{{ post.topic.owner.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+				<a class="text-dark" href="{{ post.author.profile.get_absolute_url }}"><b>{{ post.topic.owner }}</b></a>
+				<br><small class="text-muted">Posted on {{ post.date_added }}</small>
+				<p></p>
+				<p class="card-text text-dark">{{ post.text }}</p>
+			</div>
+			<div class="card-footer">
+				<a href="{% url 'blog:topic' post.id %}" class="btn btn-outline-primary">Read More &rarr;</a>
+			</div>
+		</div>
+		{% endfor %}
+	
+
+				
+		{% for post in comments %}
+		<div class="card card-signin my-5">
+			<div class="card-body">
+				<a href="{{ post.user_name.profile.get_absolute_url }}"><img src="{{ post.post.user_name.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+				<a class="text-dark" href="{{ post.user_name.profile.get_absolute_url }}"><b>{{ post.post.user_name }}</b></a>
+				<br><small class="text-muted">Posted on {{ post.post.date_posted }}</small>
+				<br><br>2
+				<p class="card-text text-dark">{{ post.post.description }}</p>
+			</div>
+			{% if post.post.tags %}
+				<br><p class="text-danger ml-3"><b>Tags: <i>{{ post.post.tags }}</i></b></p>
+			{% endif %}
+			<div class="card-footer">
+				<button class="btn btn-white mr-3 like" id="{{ post.post.id }}">
+					{% if post in liked_post %}
+						<a href="{% url 'post-like' %}" style="color:red;" id="likebtn{{ post.post.id }}"> Unlike</a> | {{post.post.likes.count}}
+					{% else %}
+						<a href="{% url 'post-like' %}" style="color:green;" id="likebtn{{ post.post.id }}"> Like</a> | {{post.post.likes.count}}
+					{% endif %}
+				</button>
+				<a class="btn btn-outline-info" href="{% url 'post-detail' post.post.id %}">Comments | {{ post.post.details.count }}</a>
+			</div>
+		</div>
+		{% endfor %}
+
+
+			
+		{% for post in users %}
+		<div class="card card-signin my-5">
+			<div class="card-body">
+				<a href="{{ post.user.profile.get_absolute_url }}"><img src="{{ post.user.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+				<a class="text-dark" href="{{ post.user.profile.get_absolute_url }}"><b>{{ post.user }}</b></a>
+				{% if post.status != 1 %}
+					<br><small class="text-muted">Status : Regular User</small>
+				{% endif %}
+				{% if post.status == 1 %}
+					<br><small class="text-muted">Status : Author</small>
+				{% endif %}
+				<p></p>
+				{% if post.first_name != '' %}
+					<p class="card-text text-dark text-capitalize">Name : {{ post.first_name }} {{ post.last_name }}</p>
+				{% endif %}				
+				{% if post.description != '' %}
+					<p class="card-text text-dark">Description : {{ post.description }}</p>
+				{% endif %}
+				{% if post.bio != '' %}
+					<p class="card-text text-dark">Bio : {{ post.bio }}</p>
+				{% endif %}
+				{% if post.interests != '' %}
+					<p class="card-text text-dark">Interests : {{ post.interests }}</p>
+				{% endif %}
+
+
+			</div>
+			<a href="{% url 'post-detail' post.id %}"><img class="card-img-top" src="{{ post.pic.url }}" alt=""></a>
+
+			<div class="card-footer">
+
+				<a href="{{ post.user.profile.get_absolute_url }}" class="btn btn-outline-primary">Visit Profile &rarr;</a>
+				<a class="btn btn-outline-info" href="{% url 'user-posts' post.user %}">Users Posts</a>
+				<a class="btn btn-outline-info" href="{% url 'blog:user-blogs' post.user %}">Users Blogs</a>				
+
+			</div>
+		</div>
+		{% endfor %}
+
+
+				
+			{% for post in blogs %}
+			<div class="card card-signin my-5">
+				<div class="card-body">
+					<a href="{{ post.author.profile.get_absolute_url }}"><img src="{{ post.author.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+					<a class="text-dark" href="{{ post.author.profile.get_absolute_url }}"><b>{{ post.author }}</b></a>
+					<br><small class="text-muted">Posted on {{ post.created_on }}</small>
+					<p></p>
+					<p class="card-text text-dark"><u>{{ post.title }} :</u></p>
+				    <p class="card-text text-dark">{{ post.content }}</p>
+				</div>
+				<div class="card-footer">
+					{% if post.status == 0 %}
+					1
+					{% else %}
+					2
+					{% endif %}
+					<a href="{% url 'blog:blog_detail' post.slug %}" class="btn btn-outline-primary">Read More &rarr;</a>
+				    <a class="btn btn-outline-info" href="{% url 'blog:blog_detail' post.slug %}">Comments | {{ post.comments.count }}</a>
+
+				</div>
+			</div>
+			{% endfor %}
+	
+
+		
+			{% for post in topics %}
+			<div class="card card-signin my-5">
+				<div class="card-body">
+					<a href="{{ post.user_name.profile.get_absolute_url }}"><img src="{{ post.owner.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+					<a class="text-dark" href="{{ post.author.profile.get_absolute_url }}"><b>{{ post.owner }}</b></a>
+					<br><small class="text-muted">Posted on {{ post.date_added }}</small>
+					<p></p>
+					<p class="card-text text-dark">{{ post.text }}</p>
+				</div>
+				<div class="card-footer">
+			        <a href="{% url 'blog:topic' post.id %}" class="btn btn-outline-primary">Read More &rarr;</a>
+				</div>
+			</div>
+			{% endfor %}
+
+
+				
+			{% for post in blogcomments %}
+			<div class="card card-signin my-5">
+				<div class="card-body">
+					<a href="{{ post.post.author.profile.get_absolute_url }}"><img src="{{ post.post.author.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+					<a class="text-dark" href="{{ post.user_name.profile.get_absolute_url }}"><b>{{ post.post.author }}</b></a>
+					<br><small class="text-muted">Posted on {{ post.post.created_on }}</small>
+					<p></p>
+				    <p class="card-text text-dark"><u>{{ post.post.title }} :</u></p>
+					<p class="card-text text-dark">{{ post.post.content }}</p>
+				</div>
+				<a href="{% url 'blog:blog_detail' post.post.slug %}"><img class="card-img-top" src="{{ post.pic.url }}" alt=""></a>
+
+				<div class="card-footer">
+
+				  <a href="{% url 'blog:blog_detail' post.post.slug %}" class="btn btn-outline-primary">Read More &rarr;</a>
+				  <a class="btn btn-outline-info" href="{% url 'blog:blog_detail' post.post.slug %}">Comments | {{ post.post.comments.count }}</a>
+				</div>
+			</div>
+			{% endfor %}
+	
+
+	      	
+			{% for post in posts %}
+			<div class="card card-signin my-5">
+				<div class="card-body">
+					<a href="{{ post.user_name.profile.get_absolute_url }}"><img src="{{ post.user_name.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+					<a class="text-dark" href="{{ post.user_name.profile.get_absolute_url }}"><b>{{ post.user_name }}</b></a>
+					<br><small class="text-muted">Posted on {{ post.date_posted }}</small>
+					<p></p>
+					<p class="card-text text-dark">{{ post.description }}</p>
+				</div>
+				{% if post.cover_Pic != 'default.jpg' %}
+				<a href="{% url 'post-detail' post.id %}"><img class="card-img-top" src="{{ post.cover_Pic.url }}" alt=""></a>
+				{% endif %}
+				{% if post.tags %}
+					<p class="text-danger ml-3"><b>Tags: <i>{{ post.tags }}</i></b></p>
+				{% endif %}
+				<div class="card-footer">
+					<button class="btn btn-white mr-3 like" id="{{ post.id }}">
+						{% if post in liked_post %}
+							<a href="{% url 'post-like' %}" style="color:red;" id="likebtn{{ post.id }}"> Unlike</a> | {{post.likes.count}}
+						{% else %}
+							<a href="{% url 'post-like' %}" style="color:green;" id="likebtn{{ post.id }}"> Like</a> | {{post.likes.count}}
+						{% endif %}
+					</button>
+					<a class="btn btn-outline-info" href="{% url 'post-detail' post.id %}">Comments | {{ post.details.count }}</a>
+				</div>
+			</div>
+	        {% endfor %}
+	    </div>
+
+
+
+
+
+
+
+
+
+
+		
+	<div class="col-md-4">
+		<div class="card card-signin my-5">
+		<a href="{{ request.user.profile.get_absolute_url }}">
+			<img
+			class="card-img-top"
+			src="{{ request.user.profile.image.url }}"
+			alt=""/>
+		</a>
+		    <div class="card-body">
+			  <h5 class="card-title text-center">{{ request.user }}</h5>
+				<h6 class="text-center">				  
+				<a class="text-muted" href="{% url 'friend_list' %}">{{ request.user.profile.friends.count }} Friends</a>
+				</h6>
+			  <p class="card-text text-center">About Me : {{ request.user.profile.bio }}</p>
+			  <a class="btn btn-outline-info" href="{% url 'user-posts' request.user %}">Posts</a>
+			  <a class="btn btn-outline-info" href="{% url 'blog:user-blogs' request.user %}">Blogs</a>
+			</div>
+		</div>
+	  </div>
+
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}
+{% block jsfiles %}
+<script>
+	$(".like").click(function (e) {
+    var id = this.id;
+    var href = $('.like').find('a').attr('href');
+    e.preventDefault();
+
+    $.ajax({
+        url: href,
+        data: {
+          'likeId': id
+        },
+        success: function(response){
+          if(response.liked){
+            $('#likebtn' + id).html("Unlike");
+            $('#likebtn' + id).css("color", "red")
+          }
+          else{
+            $('#likebtn' + id).html("Like");
+            $('#likebtn' + id).css("color", "green")
+          }
+        }
+      })
+});
+</script>
+{% endblock jsfiles %}
