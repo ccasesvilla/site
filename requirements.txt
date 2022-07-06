@@ -90,7 +90,6 @@ swapper==1.1.2.post1
 termcolor==1.1.0
 texttable==1.6.4
 
-ufw==0.36
 unattended-upgrades==0.1
 urllib3==1.26.6
 virtualenv==20.15.1
