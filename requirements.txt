@@ -1,4 +1,5 @@
 Django==3.2.7
+django-autoslug==1.9.8
 django-crispy-forms==1.12.0
 django-emoji==2.2.2
 django-emoji-picker==0.0.6
