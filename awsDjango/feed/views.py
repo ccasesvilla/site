@@ -34,8 +34,10 @@ class PostListView(ListView):
         context = super(PostListView, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             liked = [i for i in Post.objects.all() if Like.objects.filter(user = self.request.user, post=i)]
+            
             photos = PostImage.objects.all()
             context['liked_post'] = liked
+            print(context)
         return context
 
 
@@ -80,7 +82,7 @@ def post_detail(request, pk):
         form = NewCommentForm(request.POST)
         if form.is_valid():
             data = form.save(commit=False)
-            data.comment = data.comment[3:-4]
+            data.comment = data.comment
             data.post = post
             data.username = user
             data.save()
@@ -95,7 +97,6 @@ def post_detail(request, pk):
 
 @login_required
 def create_post(request):
-        user = request.user
         # ImageFormSet = modelformset_factory(PostImage, form=PostImageForm, max_num = 10)
 
         if request.method == "POST":
@@ -104,8 +105,9 @@ def create_post(request):
             files = request.FILES.getlist('images')
             if form.is_valid():
                 data = form.save(commit=False)
-                data.description = data.description[3:-4]
-                data.tags = data.tags[3:-4]
+                # data.description = data.description[3:-4]
+                # if data.tags:
+                #     data.tags = data.tags[3:-4]
                 print(data.tags,data.description)
                 
                 data.user_name = request.user

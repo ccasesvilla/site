@@ -6,14 +6,16 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.conf import settings
 
+
 STATUS = (
     (0, "Regular User"),
     (1, "Author")
 )
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=20,blank=True)
     last_name = models.CharField(max_length=20, blank = True)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
     slug = AutoSlugField(populate_from = 'user')
@@ -41,14 +43,12 @@ def post_save_user_model_receiver(sender, instance, created, *args, **kwargs):
 post_save.connect(post_save_user_model_receiver, sender=settings.AUTH_USER_MODEL)
 
 
-
 class ProfileImage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     images = models.FileField(upload_to='profile_album', blank=True)
 
     def __str__(self):
         return self.profile.user
-
 
 
 class FriendRequest(models.Model):

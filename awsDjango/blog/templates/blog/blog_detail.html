@@ -18,149 +18,177 @@
   <script src="https://cdn.tiny.cloud/1/7op7nw7ux5rjy9gv3rjft1amkh0pv6rg3qsbh1whmqsjd9tj/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
 tinymce.init({
+  force_br_newlines : false,
+  force_p_newlines : false,
+  format_empty_lines: true,
+  forced_root_block:false,
+  remove_linebreaks : true,
+  cleanup: true,
+  paragraph_breaks:false,
+  entity_encoding: 'raw',
   selector: 'textarea',
-  menubar: false,
-  plugins: 'emoticons advlist link image lists',
+  menubar: true,
+  plugins: 'emoticons advlist link image lists wordcount',
   toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
   emoticons_database: 'emojis'
+  
 });
 </script>
 </head>
+<body>
 
 
     <p>
-   <div class="container">
-       <br></br>
-       <br>
-
-<div class="col col-10 card">
-      <div  class="card-body">
-        <p style="text-align:center; font-size: 30px"><img src="{{ post.author.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">{% block title %} {{ post.title }} {% endblock title %}</p>
-        <p style="text-align:center;" class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
-           
-
-
-
-
-
-
-    <div class="row justify-content-center">
-     <div class="col-12 col-md-6">
-    <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel" style="justify-content:center">
-    <!--Indicators-->
-    <ol class="carousel-indicators">
-    {% for p in photos %}
-      <li data-target="#carousel-example-1z" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %} active {% endif %}"></li>
-    {% endfor %}
-    </ol>
-    <!--/.Indicators-->
-    <!--Slides-->
-    <div style="z-index: 1" class="carousel-inner" role="listbox">
-      {% for p in photos %}
-      <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
-        <img class="d-block w-100" src="{{p.images.url}}"
-          alt="First slide">
-      </div>
-      {% endfor %}
-      <!--/First slide-->
-    <!--/.Slides-->
-    <!--Controls-->
-    <a class="carousel-control-prev" href="#carousel-example-1z" role="button" data-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carousel-example-1z" role="button" data-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
-    <!--/.Controls-->
-  </div>
-  </div>
-  <p></p>
-          <p style="text-align:center;" class="card-text "> {{ post.content }} </p>
-
-
-
-    </div>
-    
-    </div>
-       
-  </div> 
-  
-
-      <div class="card-footer"style="width:100%;">
-
-<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Comment
-</button>
-
-      </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-          <div class="card-body">
-            {% if new_comment %}
-            <div class="alert alert-success" role="alert">
-              Your comment is awaiting moderation
-            </div>
-            {% else %}
-            <form method="post">
-              {{ comment_form | crispy }}
-              {% csrf_token %}
-              <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </form>
-            {% endif %}
-            </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-</div>
-
-    <div class="col-md-9 card mb-4  mt-3 ">
-      <div class="card-body">
-        <!-- comments -->
-        {% with comments.count as total_comments %}
-        <p  style="text-align:center; font-size: 25px">{{ total_comments }} Comment(s)</p>
-
-        <p>
-          {% endwith %} {% for comment in comments %}
-        </p>
-
-        <div class="comments" style="padding: 10px;">
-          <p class="font-weight-bold">
-          <div class="container">
-          <div class="row">
-          <div class="col-2">          
-            <img src="{{ comment.user.profile.image.url }}" alt="mdo" width="55" height="55" class="rounded-circle">
-<br>
- </div>
- <div class="col">
-             {{ comment.user}} 
-            <span class=" text-muted font-weight-normal">
-              {{ comment.created_on|date:'M d, Y H:i' }}
-            </span>
-  
-            <br></br>
-
-          {{ comment.body | linebreaks }}
-        </div>          </div>
-            </div>
-            </div>
-        {% endfor %}
-      </div>
-    </div>
-    </div>
-        </div>
+<div class="container">
     <br></br>
+    <br>
+     <div class="col card">
+        <div  class="card-body">
+          <p style="text-align:center; font-size: 30px"><img src="{{ post.author.profile.image.url }}" alt="" width="55" height="55" class="rounded-circle">{% block title %} {{ post.title }} {% endblock title %}</p>
+          <p style="text-align:center;" class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
+              <div class="row justify-content-center">
+                <div class="col-12 col-md-6">
+                  <div id="carousel-example-1z" class="carousel slide carousel-fade" data-ride="carousel" style="justify-content:center">
+                    <!--Indicators-->
+                    <ol class="carousel-indicators">
+                    {% for p in photos %}
+                      <li data-target="#carousel-example-1z" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %} active {% endif %}"></li>
+                    {% endfor %}
+                    </ol>
+                    <!--/.Indicators-->
+                    <!--Slides-->
+                    <div style="z-index: 1" class="carousel-inner" role="listbox">
+                      {% for p in photos %}
+                        <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                          <img class="d-block w-100" src="{{p.images.url}}"
+                            alt="First slide">
+                        </div>
+                          {% endfor %}
+                      <!--/First slide-->
+                      <!--/.Slides-->
+                      <!--Controls-->
+                        <a class="carousel-control-prev" href="#carousel-example-1z" role="button" data-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Previous</span>
+                          </a>
+                        <a class="carousel-control-next" href="#carousel-example-1z" role="button" data-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="sr-only">Next</span>
+                        </a>
+                      <!--/.Controls-->
+                    </div>
+                  </div>
+                    <p></p>
+                    <p style="text-align:center;" class="card-text "> {{ post.content }} </p>
+                </div>    
+              </div>       
+        </div>
+        <div class="card-footer">
+
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Comment
+            </button>
+            {% if post.author == user %}
+            <a class="btn btn-outline-info ml-1" href="{% url 'blog:edit_blog' post.id %}">Update</a>
+            <a class="btn btn-outline-danger ml-1" href="{% url 'blog:blog-delete' post.id %}">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="card-body">
+                          {% if new_comment %}
+                      <div class="alert alert-success" role="alert">
+                              Your comment is awaiting moderation
+                      </div>
+                            {% else %}
+                            <form method="post">
+                              {{ comment_form | crispy }}
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </form>
+                            {% endif %}
+                    </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="col card mb-4  mt-3 ">
+          <div class="col-12 card-body">
+                  {% with comments.count as total_comments %}
+                  <p  style="text-align:center; font-size: 25px">{{ total_comments }} Comment(s)</p>        
+                  {% endwith %}
+                  {% for comment in comments %}
+            <div class="card card-signin my-5">     
+              <div class="card-body">
+                      <a href="{{ comment.user.profile.get_absolute_url }}"><img src="{{ comment.user.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+                        <a class="text-dark" href="{{ comment.user.profile.get_absolute_url }}"><b>From : {{ comment.user }}</b></a>
+                          11111{{comment.created_on}}<p></p>
+                          {% if "</p> <p> " in comment %}
+                            ASS FUCK
+                            {% endif %}
+                          {{comment.body}}<p></p>
+                          reply{{comment.reply}}<p></p>
+                          slug{{comment.Slug}}<p></p>
+                          id{{comment.id}}<p></p>
+              
+              <div class="card-footer">
+                  <a class="btn btn-outline-secondary" data-bs-toggle="collapse" href="#collapseExample{{comment.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                      Reply </a>
+                  <a class="btn btn-outline-danger mr-1 float-right" href="{% url 'blog:comment-delete' comment.id %}">Delete</a>
+              </div> </div>   
+                    
+                        {% for reply in replies %}
+                        {% if reply.reply == comment.Slug %}   
+              <div class="card card-signin my-5">     
+                <div class="card-body">                
+                            <a href="{{ reply.user.profile.get_absolute_url }}"><img src="{{ reply.user.profile.image.url }}" class="rounded-circle" width="30" height="30" alt=""></a>
+                            <a class="text-dark" href="{{ reply.user.profile.get_absolute_url }}"><b>From : {{ reply.user }}</b></a>
+                            2222{{reply.created_on}}<p></p>
+                            {{reply.body}}<p></p>
+                            reply{{reply.reply}}<p></p>
+                            slug{{reply.Slug}}<p></p>
+                            id{{reply.id}}<p></p> 
+                                        
+                </div>
+                                      <div class="collapse" id="collapseExample{{comment.id}}">
+                                          <div>
+                                                        <form action="" method="POST" enctype="multipart/form-data">
+                                                          {% csrf_token %}
+                                              <div class="form-group">
+                                                          {{ comment_form.user }}
+                                                          {{comment_form}}
+                                                </div>
+                                                <div class="form-group mt-md-2">
+                                                          {{comment_form.comment}}
+                                                </div>
+                                                          <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                            <button class="btn btn-primary mt-md-1" type="submit" value="Reply">Reply</button>
+                                                          </form>
+                                              </div>  
+                                            
+                                          </div>
+                                      </div>  
+   
+              </div><hr>{% endif %} {% endfor %}{% endfor %}   
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+ </body>
+
 
 
 {% endblock content %}

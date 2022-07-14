@@ -5,12 +5,11 @@ from django.utils.text import slugify
 from django import forms
 from tinymce.widgets import TinyMCE
 
+
+
 class TinyMCEWidget(TinyMCE):
     def use_required_attribute(self, *args):
         return False
-
-
-
 
 
 class TopicForm(forms.ModelForm):
@@ -30,17 +29,14 @@ class EntryForm(forms.ModelForm):
         fields = ['text']
         labels = {'text': ''}
        # widgets = {'text': forms.Textarea(attrs={'cols': 80})}
-        
+
+ 
 class PostImageForm(forms.ModelForm):
     images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}),required=False)
-
 
     class Meta:
         model = PostImage
         fields =  ['images']      
-
-
-
     
         
 class PostForm(PostImageForm):
@@ -55,9 +51,6 @@ class PostForm(PostImageForm):
     class Meta(PostImageForm.Meta):
         model = Post
         fields = ['title','content','status'] + PostImageForm.Meta.fields
-
-
-
 
 
 class FilterForm(Form):

@@ -17,11 +17,20 @@
 
 <script>
 tinymce.init({
-  selector: 'textarea',
-  menubar: false,
-  plugins: 'emoticons advlist link image lists',
-  toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
-  emoticons_database: 'emojis'
+    cleanup: true,
+    entity_encoding: 'raw',
+    selector: 'textarea',
+    menubar: false,
+    force_br_newlines : false,
+    force_p_newlines : false,
+    format_empty_lines : true,
+    forced_root_block:false,
+    remove_linebreaks:true,
+    paragraph_breaks:true,
+    entity_encoding:'raw',
+	plugins: 'emoticons advlist link image lists wordcount',
+	toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+	emoticons_database: 'emojis'
 });
 </script>
 </head>

@@ -155,8 +155,12 @@
 				    <p class="card-text text-dark">{{ post.content }}</p>
 				</div>
 				<div class="card-footer">
-
-				    <a href="{% url 'blog:blog_detail' post.slug %}" class="btn btn-outline-primary">Read More &rarr;</a>
+					{% if post.status == 0 %}
+					1
+					{% else %}
+					2
+					{% endif %}
+					<a href="{% url 'blog:blog_detail' post.slug %}" class="btn btn-outline-primary">Read More &rarr;</a>
 				    <a class="btn btn-outline-info" href="{% url 'blog:blog_detail' post.slug %}">Comments | {{ post.comments.count }}</a>
 
 				</div>
@@ -242,7 +246,7 @@
 
 
 
-
+		
 	<div class="col-md-4">
 		<div class="card card-signin my-5">
 		<a href="{{ request.user.profile.get_absolute_url }}">

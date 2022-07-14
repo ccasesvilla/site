@@ -17,11 +17,21 @@
 
 <script>
 tinymce.init({
+  cleanup: true,
+  entity_encoding: 'raw',
   selector: 'textarea',
   menubar: false,
-  plugins: 'emoticons advlist link image lists',
+  force_br_newlines : false,
+  force_p_newlines : false,
+  format_empty_lines : true,
+  forced_root_block:false,
+  remove_linebreaks:true,
+  paragraph_breaks:true,
+  entity_encoding:'raw',
+  plugins: 'emoticons advlist link image lists wordcount',
   toolbar: 'emoticons undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
   emoticons_database: 'emojis'
+  
 });
 </script>
 </head>
@@ -40,7 +50,7 @@ tinymce.init({
           {% csrf_token %}
           <fieldset class="form-group" style="text-transform:capitalize"><br>
               
-              {{ form|crispy }}
+              {{ form.as_p }}
             </fieldset>
           <div class="form-group">
               <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" name="submit">Post</button><br>

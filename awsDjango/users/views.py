@@ -10,7 +10,9 @@ from .models import Profile, FriendRequest
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
 
+
 User = get_user_model()
+
 
 @login_required
 def users_list(request):
@@ -46,6 +48,7 @@ def users_list(request):
 	}
 	return render(request, "users/users_list.html", context)
 
+
 def friend_list(request):
 	p = request.user.profile
 	friends = p.friends.all()
@@ -53,6 +56,7 @@ def friend_list(request):
 	'friends': friends
 	}
 	return render(request, "users/friend_list.html", context)
+
 
 @login_required
 def send_friend_request(request, id):
@@ -62,6 +66,7 @@ def send_friend_request(request, id):
 			to_user=user)
 	return HttpResponseRedirect('/users/{}'.format(user.profile.slug))
 
+
 @login_required
 def cancel_friend_request(request, id):
 	user = get_object_or_404(User, id=id)
@@ -70,6 +75,7 @@ def cancel_friend_request(request, id):
 			to_user=user).first()
 	frequest.delete()
 	return HttpResponseRedirect('/users/{}'.format(user.profile.slug))
+
 
 @login_required
 def accept_friend_request(request, id):
@@ -85,12 +91,14 @@ def accept_friend_request(request, id):
 	frequest.delete()
 	return HttpResponseRedirect('/users/{}'.format(request.user.profile.slug))
 
+
 @login_required
 def delete_friend_request(request, id):
 	from_user = get_object_or_404(User, id=id)
 	frequest = FriendRequest.objects.filter(from_user=from_user, to_user=request.user).first()
 	frequest.delete()
 	return HttpResponseRedirect('/users/{}'.format(request.user.profile.slug))
+
 
 def delete_friend(request, id):
 	user_profile = request.user.profile
@@ -101,6 +109,7 @@ def delete_friend(request, id):
 
 
 from blog.models import Post as pt
+
 
 @login_required
 def profile_view(request, slug):
@@ -140,6 +149,7 @@ def profile_view(request, slug):
 
 	return render(request, "users/profile.html", context)
 
+
 def register(request):
 	if request.method == 'POST':
 		form = UserRegisterForm(request.POST)
@@ -152,6 +162,7 @@ def register(request):
 		form = UserRegisterForm()
 	return render(request, 'users/register.html', {'form':form})
 
+
 @login_required
 def edit_profile(request):
 	if request.method == 'POST':
@@ -159,9 +170,9 @@ def edit_profile(request):
 		p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
 		if u_form.is_valid() and p_form.is_valid():
 			data = p_form.save(commit=False)
-			data.bio = data.bio[3:-4]
-			data.description = data.description[3:-4]
-			data.interests = data.interests[3:-4]
+			data.bio = data.bio
+			data.description = data.description
+			data.interests = data.interests
 			u_form.save()
 			data.save()
 			messages.success(request, f'Your account has been updated!')
@@ -174,6 +185,7 @@ def edit_profile(request):
 		'p_form': p_form,
 	}
 	return render(request, 'users/edit_profile.html', context)
+
 
 @login_required
 def my_profile(request):
@@ -210,6 +222,7 @@ def my_profile(request):
 	}
 
 	return render(request, "users/profile.html", context)
+
 
 @login_required
 def search_users(request):
